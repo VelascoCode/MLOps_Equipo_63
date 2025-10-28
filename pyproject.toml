@@ -1,0 +1,32 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "mlops_equipo_63"
+version = "0.0.1"
+description = "Este proyecto tiene como prop\u00f3sito experimentar de manera pr\u00e1ctica c\u00f3mo se construye, organiza y despliega un sistema de Machine Learning en producci\u00f3n, siguiendo los principios de MLOps."
+authors = [
+  { name = "Equipo 63" },
+]
+license = { file = "LICENSE" }
+readme = "README.md"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License"
+]
+requires-python = "~=3.12.0"
+
+
+[tool.ruff]
+line-length = 99
+src = ["mlops_equipo_63"]
+include = ["pyproject.toml", "mlops_equipo_63/**/*.py"]
+
+[tool.ruff.lint]
+extend-select = ["I"]  # Add import sorting
+
+[tool.ruff.lint.isort]
+known-first-party = ["mlops_equipo_63"]
+force-sort-within-sections = true
+
