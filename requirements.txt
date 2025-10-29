@@ -10,4 +10,11 @@ pip
 python-dotenv
 ruff
 scikit-learn
+pandas
+optuna
+mlflow
+joblib
+xgboost
+lightgbm
+seaborn
 -e .
