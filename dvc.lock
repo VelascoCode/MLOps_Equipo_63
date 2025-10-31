@@ -1,0 +1,19 @@
+schema: '2.0'
+stages:
+  prepare:
+    cmd: python mlops_equipo_63/prepare.py data/raw/online_news_modified.csv 
+      data/processed/online_news_clean.csv
+    deps:
+    - path: data/raw/online_news_modified.csv
+      hash: md5
+      md5: 378efec5965400e8af2d93f1e79bf811
+      size: 22660806
+    - path: mlops_equipo_63/prepare.py
+      hash: md5
+      md5: fb8a30b042aa16d621399ada2d7b7922
+      size: 1508
+    outs:
+    - path: data/processed/online_news_clean.csv
+      hash: md5
+      md5: 69e76805daa6b2c9674435402b56a619
+      size: 19857469
