@@ -1,0 +1,9 @@
+stages:
+  prepare:
+    cmd: python prepare.py data/raw/online_news_modified.csv 
+      data/processed/online_news_clean.csv
+    deps:
+    - data/raw/online_news_modified.csv
+    - prepare.py
+    outs:
+    - data/processed/online_news_clean.csv
