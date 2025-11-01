@@ -1,0 +1,26 @@
+# Configuración global del proyecto
+project:
+  name: news_popularity_prediction
+  random_state: 42
+
+# Parámetros de preprocesamiento
+preprocessing:
+  imputation_strategy: median
+  test_size: 0.2
+  random_state: 42
+  target_threshold: null  # null = usar mediana
+
+# Parámetros de entrenamiento
+training:
+  n_trials: 50
+  cv_folds: 3
+  random_state: 42
+  
+# Configuración MLflow
+mlflow:
+  tracking_uri: file:./mlruns
+  experiment_name: News_Popularity_Pipeline
+  
+# Configuración DVC
+dvc:
+  remote: s3remote

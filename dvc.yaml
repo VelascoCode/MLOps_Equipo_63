@@ -1,9 +1,58 @@
 stages:
-  prepare:
-    cmd: python mlops_equipo_63/prepare.py data/raw/online_news_modified.csv 
-      data/processed/online_news_clean.csv
+  prepare_data:
+    cmd: python mlops_equipo_63/scripts/prepare_data.py
     deps:
-    - data/raw/online_news_modified.csv
-    - mlops_equipo_63/prepare.py
+      - data/raw/online_news_modified.csv
+      - mlops_equipo_63/scripts/prepare_data.py
+      - mlops_equipo_63/data_loader.py
+      - mlops_equipo_63/preprocessing.py
+    params:
+      - preprocessing.imputation_strategy
+      - preprocessing.test_size
+      - preprocessing.target_threshold
     outs:
-    - data/processed/online_news_clean.csv
+      - data/processed/cleaned_data.csv
+    metrics:
+      - reports/data_quality.json:
+          cache: false
+
+  train_model:
+    cmd: python mlops_equipo_63/scripts/train_model.py
+    deps:
+      - data/processed/cleaned_data.csv
+      - mlops_equipo_63/scripts/train_model.py
+      - mlops_equipo_63/preprocessing.py
+      - mlops_equipo_63/model_training.py
+      - mlops_equipo_63/hyperparameter_optimization.py
+      - mlops_equipo_63/feature_engineering.py
+    params:
+      - preprocessing.test_size
+      - preprocessing.random_state
+      - training.n_trials
+      - training.cv_folds
+      - training.random_state
+      - mlflow
+    outs:
+      - models/best_model.pkl
+    metrics:
+      - reports/metrics.json:
+          cache: false
+
+  evaluate_model:
+    cmd: python src/scripts/evaluate_model.py
+    deps:
+      - models/best_model.pkl
+      - data/processed/cleaned_data.csv
+      - src/scripts/evaluate_model.py
+      - src/preprocessing.py
+      - src/evaluation.py
+    params:
+      - mlflow
+    metrics:
+      - reports/evaluation_results.json:
+          cache: false
+    plots:
+      - reports/figures/confusion_matrix.png:
+          cache: false
+      - reports/figures/roc_curve.png:
+          cache: false

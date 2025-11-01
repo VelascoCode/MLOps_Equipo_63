@@ -1,0 +1,9 @@
+{
+    "total_samples": 39805,
+    "num_features": 61,
+    "missing_values": 0,
+    "class_distribution": {
+        "unpopular": 18415,
+        "popular": 21390
+    }
+}

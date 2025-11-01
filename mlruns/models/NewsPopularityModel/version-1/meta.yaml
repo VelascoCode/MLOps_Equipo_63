@@ -1,0 +1,14 @@
+aliases: []
+creation_timestamp: 1761987260277
+current_stage: None
+description: null
+last_updated_timestamp: 1761987260277
+name: NewsPopularityModel
+run_id: acc4f52fad4c4309b743e02e399f4eed
+run_link: null
+source: file:C:/Users/carlo/Documents/GitHub/MLOps_Equipo_63/mlruns/688194890310013965/acc4f52fad4c4309b743e02e399f4eed/artifacts/model
+status: READY
+status_message: null
+storage_location: file:C:/Users/carlo/Documents/GitHub/MLOps_Equipo_63/mlruns/688194890310013965/acc4f52fad4c4309b743e02e399f4eed/artifacts/model
+user_id: null
+version: 1

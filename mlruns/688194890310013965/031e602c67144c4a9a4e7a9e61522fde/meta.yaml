@@ -1,0 +1,15 @@
+artifact_uri: file:C:/Users/carlo/Documents/GitHub/MLOps_Equipo_63/mlruns/688194890310013965/031e602c67144c4a9a4e7a9e61522fde/artifacts
+end_time: 1761983176528
+entry_point_name: ''
+experiment_id: '688194890310013965'
+lifecycle_stage: active
+run_id: 031e602c67144c4a9a4e7a9e61522fde
+run_name: DVC_Pipeline_Training
+run_uuid: 031e602c67144c4a9a4e7a9e61522fde
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1761983035356
+status: 4
+tags: []
+user_id: carlo

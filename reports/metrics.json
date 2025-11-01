@@ -1,0 +1,16 @@
+{
+    "best_cv_auc": 0.7351166219541412,
+    "best_cv_accuracy": 0.6737533410593043,
+    "test_auc": 0.7431007000944536,
+    "test_accuracy": 0.6803165431478457,
+    "best_params": {
+        "classifier": "LightGBM",
+        "lgbm_n_estimators": 730,
+        "lgbm_learning_rate": 0.010257783303878727,
+        "lgbm_num_leaves": 100,
+        "lgbm_min_child_samples": 10,
+        "lgbm_subsample": 0.6259428776871855,
+        "lgbm_colsample_bytree": 0.6011990544731433
+    },
+    "n_trials": 50
+}
