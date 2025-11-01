@@ -17,3 +17,82 @@ stages:
       hash: md5
       md5: 69e76805daa6b2c9674435402b56a619
       size: 19857469
+  prepare_data:
+    cmd: python mlops_equipo_63/scripts/prepare_data.py
+    deps:
+    - path: data/raw/online_news_modified.csv
+      hash: md5
+      md5: 378efec5965400e8af2d93f1e79bf811
+      size: 22660806
+    - path: mlops_equipo_63/data_loader.py
+      hash: md5
+      md5: 3aa433a8fb4e42ac504c9a753cc9fdc5
+      size: 832
+    - path: mlops_equipo_63/preprocessing.py
+      hash: md5
+      md5: 43ddb4294162bdff892d19937bd42269
+      size: 4927
+    - path: mlops_equipo_63/scripts/prepare_data.py
+      hash: md5
+      md5: a33db3ffc14102a1c95aa75f29cb8aed
+      size: 2438
+    params:
+      params.yaml:
+        preprocessing.imputation_strategy: median
+        preprocessing.target_threshold:
+        preprocessing.test_size: 0.2
+    outs:
+    - path: data/processed/cleaned_data.csv
+      hash: md5
+      md5: 13a347fd88a36636d9d3b6eb5155d243
+      size: 19937087
+    - path: reports/data_quality.json
+      hash: md5
+      md5: 82ed51790b511f1e2256cd948d5e0bb6
+      size: 175
+  train_model:
+    cmd: python mlops_equipo_63/scripts/train_model.py
+    deps:
+    - path: data/processed/cleaned_data.csv
+      hash: md5
+      md5: 13a347fd88a36636d9d3b6eb5155d243
+      size: 19937087
+    - path: mlops_equipo_63/feature_engineering.py
+      hash: md5
+      md5: 1f44717d42f3e832300eb6c017bdddc0
+      size: 1342
+    - path: mlops_equipo_63/hyperparameter_optimization.py
+      hash: md5
+      md5: 7aafd7e3b7ae7b44a01911e5a15cbb54
+      size: 6466
+    - path: mlops_equipo_63/model_training.py
+      hash: md5
+      md5: 49edb25730bb164e4b8ba523e0f37c7e
+      size: 3728
+    - path: mlops_equipo_63/preprocessing.py
+      hash: md5
+      md5: 43ddb4294162bdff892d19937bd42269
+      size: 4927
+    - path: mlops_equipo_63/scripts/train_model.py
+      hash: md5
+      md5: 8796d3f54aa7770dfb77546ced6f3242
+      size: 4292
+    params:
+      params.yaml:
+        mlflow:
+          tracking_uri: file:./mlruns
+          experiment_name: News_Popularity_Pipeline
+        preprocessing.random_state: 42
+        preprocessing.test_size: 0.2
+        training.cv_folds: 3
+        training.n_trials: 50
+        training.random_state: 42
+    outs:
+    - path: models/best_model.pkl
+      hash: md5
+      md5: eec12d1ae5ea5b3d6763c72e4b9065c6
+      size: 8107132
+    - path: reports/metrics.json
+      hash: md5
+      md5: 508bb2e77b005311882bb84c5adea406
+      size: 513
