@@ -5,5 +5,9 @@
     "class_distribution": {
         "unpopular": 18415,
         "popular": 21390
+    },
+    "class_balance": {
+        "unpopular_pct": 46.26,
+        "popular_pct": 53.74
     }
 }

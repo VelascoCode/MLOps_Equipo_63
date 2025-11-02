@@ -58,7 +58,6 @@ def main():
     non_numeric = df.select_dtypes(exclude=['float64', 'int64']).columns.tolist()
     if non_numeric:
         print(f"  ⚠ ADVERTENCIA: Columnas no numéricas detectadas: {non_numeric}")
-        print(f"     {non_numeric.tolist()}")
     
     # Guardar datos procesados
     output_path = Path('data/processed')
