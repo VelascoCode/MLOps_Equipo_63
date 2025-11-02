@@ -3,6 +3,7 @@ project:
   name: popularity_prediction
   random_state: 12
 
+
 # Parámetros de preprocesamiento
 preprocessing:
   imputation_strategy: median
@@ -10,16 +11,79 @@ preprocessing:
   random_state: 12
   target_threshold: null  # null = usar mediana
 
+
 # Parámetros de entrenamiento
 training:
-  n_trials: 60
-  cv_folds: 4
+  n_trials: 30
+  cv_folds: 3
   random_state: 12
+
+# Parámetros de optimización de hiperparámetros
+hyperparameter_optimization:
+  classifiers:
+    - RandomForest
+    - XGBoost
+    - LightGBM
+    - MLP
+  
+  # Rangos de hiperparámetros para Random Forest
+  random_forest:
+    n_estimators_min: 50
+    n_estimators_max: 400
+    max_depth_min: 5
+    max_depth_max: 30
+    min_samples_split_min: 2
+    min_samples_split_max: 20
+    min_samples_leaf_min: 1
+    min_samples_leaf_max: 10
+  
+  # Rangos de hiperparámetros para XGBoost
+  xgboost:
+    n_estimators_min: 100
+    n_estimators_max: 800
+    learning_rate_min: 0.01
+    learning_rate_max: 0.3
+    max_depth_min: 3
+    max_depth_max: 10
+    min_child_weight_min: 1
+    min_child_weight_max: 7
+    subsample_min: 0.6
+    subsample_max: 1.0
+    colsample_bytree_min: 0.6
+    colsample_bytree_max: 1.0
+  
+  # Rangos de hiperparámetros para LightGBM
+  lightgbm:
+    n_estimators_min: 100
+    n_estimators_max: 800
+    learning_rate_min: 0.01
+    learning_rate_max: 0.3
+    num_leaves_min: 20
+    num_leaves_max: 100
+    min_child_samples_min: 5
+    min_child_samples_max: 50
+    subsample_min: 0.6
+    subsample_max: 1.0
+    colsample_bytree_min: 0.6
+    colsample_bytree_max: 1.0
+  
+  # Rangos de hiperparámetros para MLP
+  mlp:
+    hidden_layers:
+      - "(50,)"
+      - "(100,)"
+      - "(50, 50)"
+      - "(100, 50)"
+    alpha_min: 1e-5
+    alpha_max: 1e-1
+    learning_rate_min: 1e-4
+    learning_rate_max: 1e-2
+
   
 # Configuración MLflow
 mlflow:
   tracking_uri: file:./mlruns
-  experiment_name: News_Popularity_Pipeline
+  experiment_name: News_Popularity_Experiment
   
 # Configuración DVC
 dvc:

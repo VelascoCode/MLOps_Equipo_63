@@ -1,16 +1,16 @@
 {
-    "best_cv_auc": 0.7364413107137059,
-    "best_cv_accuracy": 0.6756374827283004,
-    "test_auc": 0.732383173412024,
-    "test_accuracy": 0.6751664363773395,
+    "best_cv_auc": 0.7387178567539857,
+    "best_cv_accuracy": 0.6775214456044644,
+    "test_auc": 0.7337594220415826,
+    "test_accuracy": 0.6755432734581083,
     "best_params": {
-        "classifier": "LightGBM",
-        "lgbm_n_estimators": 728,
-        "lgbm_learning_rate": 0.010894721182712945,
-        "lgbm_num_leaves": 89,
-        "lgbm_min_child_samples": 47,
-        "lgbm_subsample": 0.6144326076844606,
-        "lgbm_colsample_bytree": 0.9184513777678351
+        "classifier": "XGBoost",
+        "xgb_n_estimators": 634,
+        "xgb_learning_rate": 0.016636614236623458,
+        "xgb_max_depth": 8,
+        "xgb_min_child_weight": 3,
+        "xgb_subsample": 0.7427511570546331,
+        "xgb_colsample_bytree": 0.779842286050866
     },
-    "n_trials": 60
+    "n_trials": 30
 }

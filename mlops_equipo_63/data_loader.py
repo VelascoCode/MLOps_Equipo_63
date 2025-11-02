@@ -23,7 +23,7 @@ def load_data(
     
     Args:
         filepath (str): Ruta al archivo CSV.
-        verbose (bool): Si True, imprime información sobre los datos cargados.
+        verbose (bool): Si True, registra información detallada sobre los datos cargados.
         encoding (str): Codificación del archivo (default: 'utf-8').
         sep (str): Separador de columnas (default: ',').
     
@@ -34,6 +34,7 @@ def load_data(
         FileNotFoundError: Si el archivo no existe.
         pd.errors.EmptyDataError: Si el archivo está vacío.
         pd.errors.ParserError: Si hay errores al parsear el CSV.
+        UnicodeDecodeError: Si hay errores de codificación.
         Exception: Para cualquier otro error inesperado.
         
     Examples:
@@ -66,23 +67,23 @@ def load_data(
         
         # Mostrar información si verbose=True
         if verbose:
-            print(f"✓ Datos cargados exitosamente desde: {filepath.name}")
-            print(f"  Ruta completa: {filepath.absolute()}")
-            print(f"  Dimensiones: {df.shape[0]:,} filas x {df.shape[1]} columnas")
-            print(f"  Memoria utilizada: {df.memory_usage(deep=True).sum() / 1024**2:.2f} MB")
+            logger.info(f"✓ Datos cargados exitosamente desde: {filepath.name}")
+            logger.info(f"  Ruta completa: {filepath.absolute()}")
+            logger.info(f"  Dimensiones: {df.shape[0]:,} filas x {df.shape[1]} columnas")
+            logger.info(f"  Memoria utilizada: {df.memory_usage(deep=True).sum() / 1024**2:.2f} MB")
             
             # Información adicional sobre tipos de datos
             numeric_cols = df.select_dtypes(include=['number']).columns
             object_cols = df.select_dtypes(include=['object']).columns
-            print(f"  Columnas numéricas: {len(numeric_cols)}")
-            print(f"  Columnas de texto/objeto: {len(object_cols)}")
+            logger.info(f"  Columnas numéricas: {len(numeric_cols)}")
+            logger.info(f"  Columnas de texto/objeto: {len(object_cols)}")
             
             # Advertencia sobre valores nulos
             null_count = df.isnull().sum().sum()
             if null_count > 0:
-                print(f"  ⚠️  Valores nulos detectados: {null_count:,} ({(null_count / df.size * 100):.2f}%)")
+                logger.warning(f"  ⚠️  Valores nulos detectados: {null_count:,} ({(null_count / df.size * 100):.2f}%)")
         
-        logger.info(f"Dataset cargado: {filepath.name} - Shape: {df.shape}")
+        logger.debug(f"Dataset cargado: {filepath.name} - Shape: {df.shape}")
         return df
         
     except pd.errors.EmptyDataError as e:
@@ -105,8 +106,6 @@ def load_data(
     except Exception as e:
         error_msg = f"Error inesperado al cargar {filepath.name}: {type(e).__name__}"
         logger.error(f"{error_msg}: {str(e)}")
-        print(f"✗ {error_msg}")
-        print(f"  Detalles: {str(e)}")
         raise
 
 
@@ -124,13 +123,21 @@ def get_data_summary(df: pd.DataFrame) -> dict:
         >>> summary = get_data_summary(df)
         >>> print(summary['total_rows'])
     """
-    return {
-        'total_rows': len(df),
-        'total_columns': len(df.columns),
-        'numeric_columns': len(df.select_dtypes(include=['number']).columns),
-        'categorical_columns': len(df.select_dtypes(include=['object', 'category']).columns),
-        'total_missing': int(df.isnull().sum().sum()),
-        'missing_percentage': round((df.isnull().sum().sum() / df.size) * 100, 2),
-        'memory_mb': round(df.memory_usage(deep=True).sum() / 1024**2, 2),
-        'duplicate_rows': int(df.duplicated().sum())
-    }
+    try:
+        summary = {
+            'total_rows': len(df),
+            'total_columns': len(df.columns),
+            'numeric_columns': len(df.select_dtypes(include=['number']).columns),
+            'categorical_columns': len(df.select_dtypes(include=['object', 'category']).columns),
+            'total_missing': int(df.isnull().sum().sum()),
+            'missing_percentage': round((df.isnull().sum().sum() / df.size) * 100, 2),
+            'memory_mb': round(df.memory_usage(deep=True).sum() / 1024**2, 2),
+            'duplicate_rows': int(df.duplicated().sum())
+        }
+        
+        logger.debug(f"Resumen de datos generado: {summary['total_rows']} filas, {summary['total_columns']} columnas")
+        return summary
+        
+    except Exception as e:
+        logger.error(f"Error al generar resumen de datos: {e}")
+        raise

@@ -32,6 +32,7 @@ stages:
       - training.cv_folds
       - training.random_state
       - mlflow
+      - hyperparameter_optimization
     outs:
       - models/best_model.pkl
     metrics:
