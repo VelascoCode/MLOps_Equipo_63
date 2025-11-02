@@ -22,8 +22,8 @@ stages:
     deps:
     - path: data/raw/online_news_modified.csv
       hash: md5
-      md5: d511f84500d2aa2701657d168ce9332e
-      size: 22660808
+      md5: e96778b47e7376b49a9e790487f7068b
+      size: 22660809
     - path: mlops_equipo_63/data_loader.py
       hash: md5
       md5: 3aa433a8fb4e42ac504c9a753cc9fdc5
@@ -34,8 +34,8 @@ stages:
       size: 4927
     - path: mlops_equipo_63/scripts/prepare_data.py
       hash: md5
-      md5: a33db3ffc14102a1c95aa75f29cb8aed
-      size: 2438
+      md5: 1fc7963895577691fef18d7bf2b71d5f
+      size: 3468
     params:
       params.yaml:
         preprocessing.imputation_strategy: median
@@ -48,8 +48,8 @@ stages:
       size: 19937087
     - path: reports/data_quality.json
       hash: md5
-      md5: 82ed51790b511f1e2256cd948d5e0bb6
-      size: 175
+      md5: b694aa1c4b90e717d35d11403201e1f7
+      size: 270
   train_model:
     cmd: python mlops_equipo_63/scripts/train_model.py
     deps:
