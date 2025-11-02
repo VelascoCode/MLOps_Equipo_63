@@ -22,8 +22,8 @@ stages:
     deps:
     - path: data/raw/online_news_modified.csv
       hash: md5
-      md5: e62795f6b8ddd6c23af139c630c2e9cf
-      size: 22660807
+      md5: d511f84500d2aa2701657d168ce9332e
+      size: 22660808
     - path: mlops_equipo_63/data_loader.py
       hash: md5
       md5: 3aa433a8fb4e42ac504c9a753cc9fdc5
@@ -82,20 +82,20 @@ stages:
         mlflow:
           tracking_uri: file:./mlruns
           experiment_name: News_Popularity_Pipeline
-        preprocessing.random_state: 42
+        preprocessing.random_state: 12
         preprocessing.test_size: 0.2
-        training.cv_folds: 3
-        training.n_trials: 50
-        training.random_state: 42
+        training.cv_folds: 4
+        training.n_trials: 60
+        training.random_state: 12
     outs:
     - path: models/best_model.pkl
       hash: md5
-      md5: eec12d1ae5ea5b3d6763c72e4b9065c6
-      size: 8107132
+      md5: 2b8d1fe2b2d2a6da79af643b90909906
+      size: 7248092
     - path: reports/metrics.json
       hash: md5
-      md5: 508bb2e77b005311882bb84c5adea406
-      size: 513
+      md5: 3d1563ea6e39b05ae3c62e01923f4a26
+      size: 511
   evaluate_model:
     cmd: python mlops_equipo_63/scripts/evaluate_model.py
     deps:
@@ -117,8 +117,8 @@ stages:
       size: 2062
     - path: models/best_model.pkl
       hash: md5
-      md5: eec12d1ae5ea5b3d6763c72e4b9065c6
-      size: 8107132
+      md5: 2b8d1fe2b2d2a6da79af643b90909906
+      size: 7248092
     params:
       params.yaml:
         mlflow:
@@ -127,13 +127,13 @@ stages:
     outs:
     - path: reports/evaluation_results.json
       hash: md5
-      md5: f6104066dccf0f9b54b8740b71d1341a
-      size: 72
+      md5: da203f8b65bbce7bb870a6230eb6a002
+      size: 71
     - path: reports/figures/confusion_matrix.png
       hash: md5
-      md5: 7b9fbae60430d20a733bbac07fc0f689
-      size: 94919
+      md5: b8dffb8baa64b7a63957c764284bc12e
+      size: 91429
     - path: reports/figures/roc_curve.png
       hash: md5
-      md5: d1f2eaa361e67c497b0fc0f6cedc426c
-      size: 135275
+      md5: e49ca3c125c80741601a69719f4ba886
+      size: 131726
