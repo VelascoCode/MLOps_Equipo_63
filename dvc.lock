@@ -22,8 +22,8 @@ stages:
     deps:
     - path: data/raw/online_news_modified.csv
       hash: md5
-      md5: 378efec5965400e8af2d93f1e79bf811
-      size: 22660806
+      md5: e62795f6b8ddd6c23af139c630c2e9cf
+      size: 22660807
     - path: mlops_equipo_63/data_loader.py
       hash: md5
       md5: 3aa433a8fb4e42ac504c9a753cc9fdc5
@@ -96,3 +96,44 @@ stages:
       hash: md5
       md5: 508bb2e77b005311882bb84c5adea406
       size: 513
+  evaluate_model:
+    cmd: python mlops_equipo_63/scripts/evaluate_model.py
+    deps:
+    - path: data/processed/cleaned_data.csv
+      hash: md5
+      md5: 13a347fd88a36636d9d3b6eb5155d243
+      size: 19937087
+    - path: mlops_equipo_63/evaluation.py
+      hash: md5
+      md5: 40a9498f76933d613cec5012a4c954b5
+      size: 3031
+    - path: mlops_equipo_63/preprocessing.py
+      hash: md5
+      md5: 43ddb4294162bdff892d19937bd42269
+      size: 4927
+    - path: mlops_equipo_63/scripts/evaluate_model.py
+      hash: md5
+      md5: 26603b69dcbf2f95323975201619c590
+      size: 2062
+    - path: models/best_model.pkl
+      hash: md5
+      md5: eec12d1ae5ea5b3d6763c72e4b9065c6
+      size: 8107132
+    params:
+      params.yaml:
+        mlflow:
+          tracking_uri: file:./mlruns
+          experiment_name: News_Popularity_Pipeline
+    outs:
+    - path: reports/evaluation_results.json
+      hash: md5
+      md5: f6104066dccf0f9b54b8740b71d1341a
+      size: 72
+    - path: reports/figures/confusion_matrix.png
+      hash: md5
+      md5: 7b9fbae60430d20a733bbac07fc0f689
+      size: 94919
+    - path: reports/figures/roc_curve.png
+      hash: md5
+      md5: d1f2eaa361e67c497b0fc0f6cedc426c
+      size: 135275
