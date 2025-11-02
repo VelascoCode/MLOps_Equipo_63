@@ -6,78 +6,53 @@
 
 Este proyecto tiene como propósito experimentar de manera práctica cómo se construye, organiza y despliega un sistema de Machine Learning en producción, siguiendo los principios de MLOps.
 
-## Project Organization
-
-```
-├── LICENSE            <- Open-source license if one is chosen
-├── Makefile           <- Makefile with convenience commands like `make data` or `make train`
-├── README.md          <- The top-level README for developers using this project.
-├── data
-│   ├── external       <- Data from third party sources.
-│   ├── interim        <- Intermediate data that has been transformed.
-│   ├── processed      <- The final, canonical data sets for modeling.
-│   └── raw            <- The original, immutable data dump.
-│
-├── docs               <- A default mkdocs project; see www.mkdocs.org for details
-│
-├── models             <- Trained and serialized models, model predictions, or model summaries
-│
-├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
-│                         the creator's initials, and a short `-` delimited description, e.g.
-│                         `1.0-jqp-initial-data-exploration`.
-│
-├── pyproject.toml     <- Project configuration file with package metadata for 
-│                         mlops_equipo_63 and configuration for tools like black
-│
-├── references         <- Data dictionaries, manuals, and all other explanatory materials.
-│
-├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
-│   └── figures        <- Generated graphics and figures to be used in reporting
-│
-├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
-│                         generated with `pip freeze > requirements.txt`
-│
-├── setup.cfg          <- Configuration file for flake8
-│
-└── mlops_equipo_63   <- Source code for use in this project.
-    │
-    ├── __init__.py             <- Makes mlops_equipo_63 a Python module
-    │
-    ├── config.py               <- Store useful variables and configuration
-    │
-    ├── dataset.py              <- Scripts to download or generate data
-    │
-    ├── features.py             <- Code to create features for modeling
-    │
-    ├── modeling                
-    │   ├── __init__.py 
-    │   ├── predict.py          <- Code to run model inference with trained models          
-    │   └── train.py            <- Code to train models
-    │
-    └── plots.py                <- Code to create visualizations
-```
-
---------
-
-# News Popularity Prediction - ML Project
-
-Proyecto de Machine Learning para predecir la popularidad de artículos de noticias online basado en características del contenido.
-
 ## 🎯 Objetivo
 
 Clasificar artículos como "populares" o "no populares" basándose en el número de shares usando técnicas de ML y mejores prácticas de MLOps.
 
-## 🏗️ Estructura del Proyecto
 
-news-popularity-ml/
-├── data/ # Datos raw y procesados (versionados con DVC)
-├── models/ # Modelos entrenados (versionados con DVC)
-├── src/ # Código fuente modularizado
-├── notebooks/ # Jupyter notebooks para exploración
-├── reports/ # Reportes, métricas y visualizaciones
-├── dvc.yaml # Pipeline reproducible
-└── params.yaml # Parámetros configurables
+## 📁 Estructura del Proyecto
 
+La organización de carpetas sigue las mejores prácticas de proyectos de Machine Learning para facilitar la reutilización, el mantenimiento y la automatización.
+
+```
+mlops_equipo_63/
+├── data/                  # Almacena datos crudos y procesados
+├── models/                # Archivos de modelos entrenados
+├── reports/               # Reportes y visualizaciones de métricas
+├── mlops_equipo_63/                   # Módulos reutilizables de Python (lógica principal)
+│   ├── data_loader.py         # Funciones para carga de datos
+│   ├── preprocessing.py       # Funciones para limpiar y transformar datos
+│   ├── model_training.py      # Funciones para entrenamiento de modelos
+│   └── ...                    # Otros módulos de utilidades
+│
+│   └── scripts/               # Scripts ejecutables para pipeline y DVC
+│       ├── prepare_data.py        # Script para preparar y limpiar datos
+│       ├── train_model.py         # Script para entrenamiento de modelos
+│       └── evaluate_model.py      # Script para evaluación y reportes finales
+├── notebooks/             # Cuadernos interactivos para exploración y análisis rápido
+├── dvc.yaml               # Pipeline de DVC (define las etapas del flujo automático)
+├── params.yaml            # Parámetros configurables utilizados en el pipeline
+└── README.md              # Documentación principal del proyecto
+
+```
+
+### Detalle de carpetas y módulos
+- `mlops_equipo_63/`: Contiene el código modular (funciones y clases) reutilizable para manipulación de datos, procesamiento y entrenamiento. Estos módulos se pueden importar en otros scripts y notebooks.
+
+- `mlops_equipo_63/scripts/`: Incluye los scripts ejecutables principales que orquestan cada fase concreta del pipeline (preparación de datos, entrenamiento y evaluación). Estos scripts son los que DVC ejecuta en cada stage.
+
+- `data/, models/ y reports/`: Espacios para los archivos de datos, modelos guardados y reportes/resultados generados automáticamente.
+
+- `notebooks/`: Uso recomendado para explorar datos, verificar hipótesis o realizar análisis adicionales de manera interactiva.
+
+- `dvc.yaml y params.yaml`: Definen las etapas, dependencias, outputs y parámetros del pipeline del proyecto, asegurando trazabilidad y reproducibilidad.
+
+- `README.md`: Esta documentación central que describe la finalidad y estructura del proyecto.
+
+Esta división permite trabajar ordenadamente, con flujos reproducibles y facilita el trabajo en equipo tanto en experimentación como en producción.
+
+--------
 
 ## 🚀 Configuración Inicial
 
