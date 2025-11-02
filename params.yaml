@@ -1,20 +1,20 @@
 # Configuración global del proyecto
 project:
-  name: news_popularity_prediction
-  random_state: 42
+  name: popularity_prediction
+  random_state: 12
 
 # Parámetros de preprocesamiento
 preprocessing:
   imputation_strategy: median
   test_size: 0.2
-  random_state: 42
+  random_state: 12
   target_threshold: null  # null = usar mediana
 
 # Parámetros de entrenamiento
 training:
-  n_trials: 50
-  cv_folds: 3
-  random_state: 42
+  n_trials: 60
+  cv_folds: 4
+  random_state: 12
   
 # Configuración MLflow
 mlflow:

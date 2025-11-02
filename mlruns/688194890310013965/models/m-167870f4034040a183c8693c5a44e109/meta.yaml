@@ -1,0 +1,10 @@
+artifact_location: file:C:/Users/carlo/Documents/GitHub/MLOps_Equipo_63/mlruns/688194890310013965/models/m-167870f4034040a183c8693c5a44e109/artifacts
+creation_timestamp: 1762051143810
+experiment_id: '688194890310013965'
+last_updated_timestamp: 1762051163629
+model_id: m-167870f4034040a183c8693c5a44e109
+model_type: null
+name: model
+source_run_id: 2c22c4e922324089a51b3d69c25d23d0
+status: 2
+status_message: null

@@ -53,6 +53,61 @@ mlops_equipo_63/
 Esta división permite trabajar ordenadamente, con flujos reproducibles y facilita el trabajo en equipo tanto en experimentación como en producción.
 
 --------
+### ⚙️ Pipeline Automatizado con DVC
+El proyecto utiliza un **pipeline automatizado con DVC (Data Version Control)** para organizar y versionar el flujo completo de Machine Learning, desde la preparación de datos hasta la evaluación de modelos.
+
+**¿Por qué usar DVC?**
+- Permite automatizar todo el proceso de datos y modelos.
+- Garantiza que los resultados sean reproducibles: cualquier persona puede ejecutar el pipeline y obtener exactamente los mismos resultados si los datos y los parámetros no cambian.
+- Facilita el trabajo colaborativo, la trazabilidad y la gestión de versiones en equipo.
+
+**Etapas principales del pipeline**
+El archivo `dvc.yaml` define las etapas (stages) clave que se ejecutan automáticamente:
+
+1. **Preparación de datos (`prepare_data`):**
+
+    -   Limpia, transforma y prepara los datos crudos.
+    -   Entradas: datos originales y scripts de preprocesamiento.
+    -   Salida: archivo de datos limpios y métricas de calidad.
+
+2. **Entrenamiento de modelo (train_model):**
+
+    -   Ejecuta la optimización y el entrenamiento del mejor modelo.
+    -   Entradas: datos procesados y scripts de entrenamiento.
+    -   Salida: modelo entrenado y métricas de entrenamiento.
+
+3.  **Evaluación de modelo (evaluate_model):**
+
+    -   Realiza la evaluación final del modelo sobre el conjunto de test.
+    -   Entradas: modelo entrenado y datos procesados.
+    -   Salida: reportes, métricas y visualizaciones.
+
+**¿Cómo ejecutar el pipeline?**
+Para ejecutar el pipeline completo y actualizar solo las etapas necesarias, usa:
+
+```bash
+> dvc repro
+
+DVC revisa los cambios en datos, scripts y parámetros, y solo ejecuta las etapas que realmente necesitan actualizarse.
+
+Visualización y trazabilidad
+Puedes visualizar el flujo del pipeline con:
+
+bash
+dvc dag
+Todos los archivos generados y versionados por DVC pueden enviarse al almacenamiento remoto (como S3 o Google Drive) con:
+
+bash
+dvc push
+Beneficios
+Reproducibilidad garantizada
+
+Versionado y control eficiente de datos/modelos/métricas
+
+Colaboración real y segura
+
+Resultados fácilmente comparables y auditables
+
 
 ## 🚀 Configuración Inicial
 
