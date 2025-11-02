@@ -22,8 +22,8 @@ stages:
     deps:
     - path: data/raw/online_news_modified.csv
       hash: md5
-      md5: 998404d133dcfed830295e12e8f71412
-      size: 22660812
+      md5: dbb392353001e973986ae531819fe0b2
+      size: 22660813
     - path: mlops_equipo_63/data_loader.py
       hash: md5
       md5: 1934ec82cd285cb458feafc1ef003189
@@ -63,8 +63,8 @@ stages:
       size: 5491
     - path: mlops_equipo_63/hyperparameter_optimization.py
       hash: md5
-      md5: 10cc85a4952f679afe1dc9c4ab9e9b6b
-      size: 13471
+      md5: 521abe0b550e8ecc40fce9be77d64858
+      size: 13525
     - path: mlops_equipo_63/model_training.py
       hash: md5
       md5: c2e44349a2301ef9683966220803bdf2
@@ -75,8 +75,8 @@ stages:
       size: 5763
     - path: mlops_equipo_63/scripts/train_model.py
       hash: md5
-      md5: e22f339e06fb1a454a7e5739f283a243
-      size: 7506
+      md5: 515318e8264b0de9ceb94aca4399fb11
+      size: 7502
     params:
       params.yaml:
         hyperparameter_optimization:
@@ -132,7 +132,7 @@ stages:
             learning_rate_max: 0.01
         mlflow:
           tracking_uri: file:./mlruns
-          experiment_name: News_Popularity_Pipeline
+          experiment_name: News_Popularity_Experiment
         preprocessing.random_state: 12
         preprocessing.test_size: 0.2
         training.cv_folds: 3
@@ -141,12 +141,12 @@ stages:
     outs:
     - path: models/best_model.pkl
       hash: md5
-      md5: 9ab841ab43225db2c41b5658d0beea1d
-      size: 2865463
+      md5: a8793d43d52a0ecb47f9dfd4a8734a01
+      size: 5706983
     - path: reports/metrics.json
       hash: md5
-      md5: 37c9c99bd764d45e73f34c00aea22e15
-      size: 499
+      md5: 2374738e6887ae94790c03bff08f6007
+      size: 500
   evaluate_model:
     cmd: python mlops_equipo_63/scripts/evaluate_model.py
     deps:
@@ -168,23 +168,23 @@ stages:
       size: 6822
     - path: models/best_model.pkl
       hash: md5
-      md5: 9ab841ab43225db2c41b5658d0beea1d
-      size: 2865463
+      md5: a8793d43d52a0ecb47f9dfd4a8734a01
+      size: 5706983
     params:
       params.yaml:
         mlflow:
           tracking_uri: file:./mlruns
-          experiment_name: News_Popularity_Pipeline
+          experiment_name: News_Popularity_Experiment
     outs:
     - path: reports/evaluation_results.json
       hash: md5
-      md5: a0bd530b2d257ee55ead761def96213c
-      size: 181
+      md5: 5711cfef1685a488efd3d5f99f9bfce0
+      size: 182
     - path: reports/figures/confusion_matrix.png
       hash: md5
-      md5: be67223ac9ffaac68802357e5779ea2a
-      size: 100879
+      md5: 96fc341739ea96557ec55fa3c8fee265
+      size: 100437
     - path: reports/figures/roc_curve.png
       hash: md5
-      md5: 15457f535680af6ee89d5cb9de850ace
-      size: 143401
+      md5: 0f8280a1331c23bed25105f685db3243
+      size: 144044
