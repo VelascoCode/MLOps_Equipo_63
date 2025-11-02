@@ -22,20 +22,20 @@ stages:
     deps:
     - path: data/raw/online_news_modified.csv
       hash: md5
-      md5: e96778b47e7376b49a9e790487f7068b
-      size: 22660809
+      md5: f98e04ca3523294f066f47860442be2e
+      size: 22660810
     - path: mlops_equipo_63/data_loader.py
       hash: md5
-      md5: 3aa433a8fb4e42ac504c9a753cc9fdc5
-      size: 832
+      md5: e126a025850704cfabb0d7fcbdb97216
+      size: 5306
     - path: mlops_equipo_63/preprocessing.py
       hash: md5
-      md5: 43ddb4294162bdff892d19937bd42269
-      size: 4927
+      md5: e1b7bb159fd98fc471fa2efa307f03b4
+      size: 5763
     - path: mlops_equipo_63/scripts/prepare_data.py
       hash: md5
-      md5: 1fc7963895577691fef18d7bf2b71d5f
-      size: 3468
+      md5: a800b8e61fbf099b8e293ab3f437ce58
+      size: 3430
     params:
       params.yaml:
         preprocessing.imputation_strategy: median
@@ -71,8 +71,8 @@ stages:
       size: 3728
     - path: mlops_equipo_63/preprocessing.py
       hash: md5
-      md5: 43ddb4294162bdff892d19937bd42269
-      size: 4927
+      md5: e1b7bb159fd98fc471fa2efa307f03b4
+      size: 5763
     - path: mlops_equipo_63/scripts/train_model.py
       hash: md5
       md5: 8796d3f54aa7770dfb77546ced6f3242
@@ -90,12 +90,12 @@ stages:
     outs:
     - path: models/best_model.pkl
       hash: md5
-      md5: 2b8d1fe2b2d2a6da79af643b90909906
-      size: 7248092
+      md5: 0681d0c00dc1acf9d0e0c89dce50a161
+      size: 9764366
     - path: reports/metrics.json
       hash: md5
-      md5: 3d1563ea6e39b05ae3c62e01923f4a26
-      size: 511
+      md5: 85fa514b3b95500da5e29776adfd0427
+      size: 499
   evaluate_model:
     cmd: python mlops_equipo_63/scripts/evaluate_model.py
     deps:
@@ -109,16 +109,16 @@ stages:
       size: 3031
     - path: mlops_equipo_63/preprocessing.py
       hash: md5
-      md5: 43ddb4294162bdff892d19937bd42269
-      size: 4927
+      md5: e1b7bb159fd98fc471fa2efa307f03b4
+      size: 5763
     - path: mlops_equipo_63/scripts/evaluate_model.py
       hash: md5
       md5: 26603b69dcbf2f95323975201619c590
       size: 2062
     - path: models/best_model.pkl
       hash: md5
-      md5: 2b8d1fe2b2d2a6da79af643b90909906
-      size: 7248092
+      md5: 0681d0c00dc1acf9d0e0c89dce50a161
+      size: 9764366
     params:
       params.yaml:
         mlflow:
@@ -127,13 +127,13 @@ stages:
     outs:
     - path: reports/evaluation_results.json
       hash: md5
-      md5: da203f8b65bbce7bb870a6230eb6a002
-      size: 71
+      md5: ed0fbac5ad400735144e01b29ecd992b
+      size: 72
     - path: reports/figures/confusion_matrix.png
       hash: md5
-      md5: b8dffb8baa64b7a63957c764284bc12e
-      size: 91429
+      md5: 7df2dbad08faaaf3559c98028d7fcf31
+      size: 92525
     - path: reports/figures/roc_curve.png
       hash: md5
-      md5: e49ca3c125c80741601a69719f4ba886
-      size: 131726
+      md5: e67de211735593d64d26b8be9d5ab9f4
+      size: 129081
