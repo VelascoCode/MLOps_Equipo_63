@@ -39,13 +39,13 @@ stages:
           cache: false
 
   evaluate_model:
-    cmd: python src/scripts/evaluate_model.py
+    cmd: python mlops_equipo_63/scripts/evaluate_model.py
     deps:
       - models/best_model.pkl
       - data/processed/cleaned_data.csv
-      - src/scripts/evaluate_model.py
-      - src/preprocessing.py
-      - src/evaluation.py
+      - mlops_equipo_63/scripts/evaluate_model.py
+      - mlops_equipo_63/preprocessing.py
+      - mlops_equipo_63/evaluation.py
     params:
       - mlflow
     metrics:
