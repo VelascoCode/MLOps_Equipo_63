@@ -85,28 +85,26 @@ El archivo `dvc.yaml` define las etapas (stages) clave que se ejecutan automáti
 **¿Cómo ejecutar el pipeline?**
 Para ejecutar el pipeline completo y actualizar solo las etapas necesarias, usa:
 
-```bash
-> dvc repro
+`bash
+> dvc repro`
 
 DVC revisa los cambios en datos, scripts y parámetros, y solo ejecuta las etapas que realmente necesitan actualizarse.
 
-Visualización y trazabilidad
-Puedes visualizar el flujo del pipeline con:
+**Visualización y trazabilidad**
 
-bash
-dvc dag
-Todos los archivos generados y versionados por DVC pueden enviarse al almacenamiento remoto (como S3 o Google Drive) con:
+-   Puedes visualizar el flujo del pipeline con:
 
-bash
-dvc push
-Beneficios
-Reproducibilidad garantizada
+`> dvc dag`
 
-Versionado y control eficiente de datos/modelos/métricas
+-   Todos los archivos generados y versionados por DVC pueden enviarse al almacenamiento remoto (como S3 o Google Drive) con:
 
-Colaboración real y segura
+`dvc push`
 
-Resultados fácilmente comparables y auditables
+**Beneficios**
+-   Reproducibilidad garantizada
+-   Versionado y control eficiente de datos/modelos/métricas
+-   Colaboración real y segura
+-   Resultados fácilmente comparables y auditables
 
 
 ## 🚀 Configuración Inicial
