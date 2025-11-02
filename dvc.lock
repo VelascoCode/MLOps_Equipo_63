@@ -22,20 +22,20 @@ stages:
     deps:
     - path: data/raw/online_news_modified.csv
       hash: md5
-      md5: f98e04ca3523294f066f47860442be2e
-      size: 22660810
+      md5: 998404d133dcfed830295e12e8f71412
+      size: 22660812
     - path: mlops_equipo_63/data_loader.py
       hash: md5
-      md5: e126a025850704cfabb0d7fcbdb97216
-      size: 5306
+      md5: 1934ec82cd285cb458feafc1ef003189
+      size: 5675
     - path: mlops_equipo_63/preprocessing.py
       hash: md5
       md5: e1b7bb159fd98fc471fa2efa307f03b4
       size: 5763
     - path: mlops_equipo_63/scripts/prepare_data.py
       hash: md5
-      md5: a800b8e61fbf099b8e293ab3f437ce58
-      size: 3430
+      md5: aeab9c321a1e0147092404e032a01e75
+      size: 8183
     params:
       params.yaml:
         preprocessing.imputation_strategy: median
@@ -59,42 +59,93 @@ stages:
       size: 19937087
     - path: mlops_equipo_63/feature_engineering.py
       hash: md5
-      md5: 1f44717d42f3e832300eb6c017bdddc0
-      size: 1342
+      md5: c9de6bca8fed6879f9ba9cd67b81038f
+      size: 5491
     - path: mlops_equipo_63/hyperparameter_optimization.py
       hash: md5
-      md5: 7aafd7e3b7ae7b44a01911e5a15cbb54
-      size: 6466
+      md5: 10cc85a4952f679afe1dc9c4ab9e9b6b
+      size: 13471
     - path: mlops_equipo_63/model_training.py
       hash: md5
-      md5: 49edb25730bb164e4b8ba523e0f37c7e
-      size: 3728
+      md5: c2e44349a2301ef9683966220803bdf2
+      size: 7708
     - path: mlops_equipo_63/preprocessing.py
       hash: md5
       md5: e1b7bb159fd98fc471fa2efa307f03b4
       size: 5763
     - path: mlops_equipo_63/scripts/train_model.py
       hash: md5
-      md5: 8796d3f54aa7770dfb77546ced6f3242
-      size: 4292
+      md5: e22f339e06fb1a454a7e5739f283a243
+      size: 7506
     params:
       params.yaml:
+        hyperparameter_optimization:
+          classifiers:
+          - RandomForest
+          - XGBoost
+          - LightGBM
+          - MLP
+          random_forest:
+            n_estimators_min: 50
+            n_estimators_max: 400
+            max_depth_min: 5
+            max_depth_max: 30
+            min_samples_split_min: 2
+            min_samples_split_max: 20
+            min_samples_leaf_min: 1
+            min_samples_leaf_max: 10
+          xgboost:
+            n_estimators_min: 100
+            n_estimators_max: 800
+            learning_rate_min: 0.01
+            learning_rate_max: 0.3
+            max_depth_min: 3
+            max_depth_max: 10
+            min_child_weight_min: 1
+            min_child_weight_max: 7
+            subsample_min: 0.6
+            subsample_max: 1.0
+            colsample_bytree_min: 0.6
+            colsample_bytree_max: 1.0
+          lightgbm:
+            n_estimators_min: 100
+            n_estimators_max: 800
+            learning_rate_min: 0.01
+            learning_rate_max: 0.3
+            num_leaves_min: 20
+            num_leaves_max: 100
+            min_child_samples_min: 5
+            min_child_samples_max: 50
+            subsample_min: 0.6
+            subsample_max: 1.0
+            colsample_bytree_min: 0.6
+            colsample_bytree_max: 1.0
+          mlp:
+            hidden_layers:
+            - (50,)
+            - (100,)
+            - (50, 50)
+            - (100, 50)
+            alpha_min: 1e-05
+            alpha_max: 0.1
+            learning_rate_min: 0.0001
+            learning_rate_max: 0.01
         mlflow:
           tracking_uri: file:./mlruns
           experiment_name: News_Popularity_Pipeline
         preprocessing.random_state: 12
         preprocessing.test_size: 0.2
-        training.cv_folds: 4
-        training.n_trials: 60
+        training.cv_folds: 3
+        training.n_trials: 30
         training.random_state: 12
     outs:
     - path: models/best_model.pkl
       hash: md5
-      md5: 0681d0c00dc1acf9d0e0c89dce50a161
-      size: 9764366
+      md5: 9ab841ab43225db2c41b5658d0beea1d
+      size: 2865463
     - path: reports/metrics.json
       hash: md5
-      md5: 85fa514b3b95500da5e29776adfd0427
+      md5: 37c9c99bd764d45e73f34c00aea22e15
       size: 499
   evaluate_model:
     cmd: python mlops_equipo_63/scripts/evaluate_model.py
@@ -105,20 +156,20 @@ stages:
       size: 19937087
     - path: mlops_equipo_63/evaluation.py
       hash: md5
-      md5: 40a9498f76933d613cec5012a4c954b5
-      size: 3031
+      md5: 8af3a6dcf947ded39fc63f0dccc1ec6d
+      size: 8508
     - path: mlops_equipo_63/preprocessing.py
       hash: md5
       md5: e1b7bb159fd98fc471fa2efa307f03b4
       size: 5763
     - path: mlops_equipo_63/scripts/evaluate_model.py
       hash: md5
-      md5: 26603b69dcbf2f95323975201619c590
-      size: 2062
+      md5: 9aa3f1e03f6f17dc18ab723d2f519da8
+      size: 6822
     - path: models/best_model.pkl
       hash: md5
-      md5: 0681d0c00dc1acf9d0e0c89dce50a161
-      size: 9764366
+      md5: 9ab841ab43225db2c41b5658d0beea1d
+      size: 2865463
     params:
       params.yaml:
         mlflow:
@@ -127,13 +178,13 @@ stages:
     outs:
     - path: reports/evaluation_results.json
       hash: md5
-      md5: ed0fbac5ad400735144e01b29ecd992b
-      size: 72
+      md5: a0bd530b2d257ee55ead761def96213c
+      size: 181
     - path: reports/figures/confusion_matrix.png
       hash: md5
-      md5: 7df2dbad08faaaf3559c98028d7fcf31
-      size: 92525
+      md5: be67223ac9ffaac68802357e5779ea2a
+      size: 100879
     - path: reports/figures/roc_curve.png
       hash: md5
-      md5: e67de211735593d64d26b8be9d5ab9f4
-      size: 129081
+      md5: 15457f535680af6ee89d5cb9de850ace
+      size: 143401
