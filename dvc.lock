@@ -13,8 +13,8 @@ stages:
       size: 658
     - path: mlops_equipo_63/Optuna_Study.py
       hash: md5
-      md5: f34b458d3767aa9ab488055d193aae34
-      size: 6247
+      md5: c2a3014b3728ae4ef875e1ca59168163
+      size: 6276
     - path: mlops_equipo_63/Retrain_and_Evaluate.py
       hash: md5
       md5: ca3cb3cf0bd86293186ec359343e1874
@@ -50,17 +50,31 @@ stages:
       size: 20128970
     - path: models/final_model.pkl
       hash: md5
-      md5: 220b51dcdb537e328d5baaba6a9e035d
-      size: 342810146
+      md5: b756c81c2493e32398cd9915ee16def7
+      size: 340226306
     - path: reports/confusion_matrix.png
       hash: md5
-      md5: 3219df2fceddab9210a2b1cbfc7a6ad6
-      size: 22549
+      md5: d6c9f253353923925efd068376a69794
+      size: 22394
     - path: reports/feature_importance.png
       hash: md5
-      md5: e25397ac8f87175ea018cd095c536fe9
-      size: 49558
+      md5: 008a4710e1a37354a0a5769be7ac3874
+      size: 49561
     - path: reports/metrics.json
       hash: md5
-      md5: d68644e3ed10497c1b2056b73668408c
+      md5: 4641756f6f5aa4d6891f0ddfb8352ef1
       size: 305
+  setup:
+    cmd: "python -m venv .venv\n.venv\\Scripts\\python -m pip install --upgrade pip\n\
+      .venv\\Scripts\\python -m pip install -r requirements.txt\n"
+    deps:
+    - path: requirements.txt
+      hash: md5
+      md5: a245be372a89f1fbb427cce80c429be6
+      size: 9554
+    outs:
+    - path: .venv
+      hash: md5
+      md5: 7a36622cd2a091b1ec827b5c6d5a5a04.dir
+      size: 1122523955
+      nfiles: 47203

@@ -103,6 +103,7 @@ def run_optuna_study(
                 subsample=trial.suggest_float("lgbm_subsample", 0.6, 1.0),
                 colsample_bytree=trial.suggest_float("lgbm_colsample", 0.6, 1.0),
                 objective="binary",
+                verbose=-1,
                 random_state=random_state,
                 n_jobs=-1,
             )
