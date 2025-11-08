@@ -5,7 +5,6 @@ from pathlib import Path
 import pytest
 
 
-@pytest.mark.integration
 def test_dvc_repro_pipeline_runs_when_enabled():
     """
     Integration test that reproduces the DVC pipeline defined in `dvc.yaml`.
@@ -18,10 +17,6 @@ def test_dvc_repro_pipeline_runs_when_enabled():
     - If both conditions are met it runs `dvc repro` in the repository root
       and asserts a zero return code.
     """
-
-    # Enable only when explicitly requested
-    if os.environ.get("RUN_DVC_INTEGRATION", "0") != "1":
-        pytest.skip("DVC integration not enabled. Set RUN_DVC_INTEGRATION=1 to run this test.")
 
     # Ensure dvc is available
     if shutil.which("dvc") is None:

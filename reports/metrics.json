@@ -1,0 +1,15 @@
+{
+  "cv": {
+    "roc_auc": 0.7130722637332627,
+    "accuracy": 0.6530903950589815
+  },
+  "test": {
+    "final_auc": 0.7260943890431709,
+    "final_accuracy": 0.6622283632709458
+  },
+  "best_params": {
+    "classifier": "RandomForest",
+    "rf_n_estimators": 397,
+    "rf_max_depth": 30
+  }
+}

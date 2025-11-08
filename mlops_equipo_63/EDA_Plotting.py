@@ -38,10 +38,11 @@ class EDAPlotter:
 
     def correlation(self, plot: bool = False, decimals: int = 2):
         corr = self.df.corr(numeric_only=True, method=self.corr_method)
+        # prepare rounded corr for plotting/returning
+        corr_to_plot = corr.round(decimals) if decimals is not None else corr
         if plot:
             plt.rcParams.update({'font.size': 6})
             plt.figure(figsize=(25, 25))
-            corr_to_plot = corr.round(decimals) if decimals is not None else corr
             sns.heatmap(corr_to_plot, center=0,annot=True, fmt=".2f")
             plt.title(f"Correlation Matrix ({self.corr_method})")
             plt.tight_layout()
