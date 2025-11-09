@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/Users/betoa/Documents/TEC/MLOPS/Gits/Fase2/MLOps_Equipo_63/mlruns/153299670879935497/e2a8a324d6454805a92a2fbb8779de96/artifacts
+end_time: 1762650166235
+entry_point_name: ''
+experiment_id: '153299670879935497'
+lifecycle_stage: active
+run_id: e2a8a324d6454805a92a2fbb8779de96
+run_name: '16'
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1762650166119
+status: 3
+tags: []
+user_id: Diego

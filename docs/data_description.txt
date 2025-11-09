@@ -1,0 +1,68 @@
+Online News Popularity
+
+This dataset summarizes a heterogeneous set of features about articles published by Mashable in a period of two years. The goal is to predict if the article will be popular (> 1400 shares) or not.
+
+The variables in the data are these:
+
+Variable Name	Role	Type	Description	Units	Missing Values Dropped
+url	ID	Categorical			no  yes
+timedelta	Other	Continuous			no  yes
+n_tokens_title	Feature	Continuous			no  no
+n_tokens_content	Feature	Continuous			no  no
+n_unique_tokens	Feature	Continuous			no  no
+n_non_stop_words	Feature	Continuous			no  no
+n_non_stop_unique_tokens	Feature	Continuous			no   no
+num_hrefs	Feature	Continuous			no  no
+num_self_hrefs	Feature	Continuous			no  no
+num_imgs	Feature	Continuous			no  no
+num_videos	Feature	Continuous			no  no
+average_token_length	Feature	Continuous			no  no
+num_keywords	Feature	Continuous			no  no
+data_channel_is_lifestyle	Feature	Continuous			no  no
+data_channel_is_entertainment	Feature	Continuous			no  no
+data_channel_is_bus	Feature	Continuous			no  no
+data_channel_is_socmed	Feature	Continuous			no  no
+data_channel_is_tech	Feature	Continuous			no  no
+data_channel_is_world	Feature	Continuous			no  no
+kw_min_min	Feature	Continuous			no  no
+kw_max_min	Feature	Continuous			no  no
+kw_avg_min	Feature	Continuous			no  no
+kw_min_max	Feature	Continuous			no  no
+kw_max_max	Feature	Continuous			no  no
+kw_avg_max	Feature	Continuous			no  no
+kw_min_avg	Feature	Continuous			no  no
+kw_max_avg	Feature	Continuous			no  no
+kw_avg_avg	Feature	Continuous			no  no
+self_reference_min_shares	Feature	Continuous			no  no
+self_reference_max_shares	Feature	Continuous			no  no
+self_reference_avg_sharess	Feature	Continuous			no  no
+weekday_is_monday	Feature	Continuous			no  no
+weekday_is_tuesday	Feature	Continuous			no  no
+weekday_is_wednesday	Feature	Continuous			no  no
+weekday_is_thursday	Feature	Continuous			no  no
+weekday_is_friday	Feature	Continuous			no  no
+weekday_is_saturday	Feature	Continuous			no  no
+weekday_is_sunday	Feature	Continuous			no  no
+is_weekend	Feature	Continuous			no  no
+LDA_00	Feature	Continuous			no  no
+LDA_01	Feature	Continuous			no  no
+LDA_02	Feature	Continuous			no  no
+LDA_03	Feature	Continuous			no  no
+LDA_04	Feature	Continuous			no  no
+global_subjectivity	Feature	Continuous			no  no
+global_sentiment_polarity	Feature	Continuous			no  no
+global_rate_positive_words	Feature	Continuous			no  no
+global_rate_negative_words	Feature	Continuous			no  no
+rate_positive_words	Feature	Continuous			no  no
+rate_negative_words	Feature	Continuous			no  no
+avg_positive_polarity	Feature	Continuous			no   no
+min_positive_polarity	Feature	Continuous			no  no
+max_positive_polarity	Feature	Continuous			no  no
+avg_negative_polarity	Feature	Continuous			no  no
+min_negative_polarity	Feature	Continuous			no  no
+max_negative_polarity	Feature	Continuous			no  no
+title_subjectivity	Feature	Continuous			no  no
+title_sentiment_polarity	Feature	Continuous			no  no
+abs_title_subjectivity	Feature	Continuous			no  no
+abs_title_sentiment_polarity	Feature	Continuous			no  no
+shares	Target	Integer			no    no

@@ -1,15 +1,18 @@
 {
   "cv": {
-    "roc_auc": 0.7130722637332627,
-    "accuracy": 0.6530903950589815
+    "roc_auc": 0.7163885138944197,
+    "accuracy": 0.6567645990195916
   },
   "test": {
-    "final_auc": 0.7260943890431709,
-    "final_accuracy": 0.6622283632709458
+    "final_auc": 0.7250294117647058,
+    "final_accuracy": 0.6648662228363271
   },
   "best_params": {
-    "classifier": "RandomForest",
-    "rf_n_estimators": 397,
-    "rf_max_depth": 30
+    "classifier": "XGBoost",
+    "xgb_n_estimators": 621,
+    "xgb_learning_rate": 0.011389852112159676,
+    "xgb_max_depth": 10,
+    "xgb_subsample": 0.7682779803763506,
+    "xgb_colsample": 0.7991186569727747
   }
 }

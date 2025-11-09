@@ -17,8 +17,8 @@ stages:
       size: 6276
     - path: mlops_equipo_63/Retrain_and_Evaluate.py
       hash: md5
-      md5: ca3cb3cf0bd86293186ec359343e1874
-      size: 8933
+      md5: e1ccda8a1c20dac8acbb37972e019adc
+      size: 9166
     - path: mlops_equipo_63/Split_and_Dummy.py
       hash: md5
       md5: f76d9013d74db5e2697abd8c5f060acd
@@ -50,20 +50,20 @@ stages:
       size: 20128970
     - path: models/final_model.pkl
       hash: md5
-      md5: b756c81c2493e32398cd9915ee16def7
-      size: 340226306
+      md5: 39226ee7ab733cccc424600e9c6316d8
+      size: 18075579
     - path: reports/confusion_matrix.png
       hash: md5
-      md5: d6c9f253353923925efd068376a69794
-      size: 22394
+      md5: a9b74a825ab32c89ff464da437e216c7
+      size: 22393
     - path: reports/feature_importance.png
       hash: md5
-      md5: 008a4710e1a37354a0a5769be7ac3874
-      size: 49561
+      md5: 5c9c9861d4f0e5dbd1f9de6da8b8d712
+      size: 45706
     - path: reports/metrics.json
       hash: md5
-      md5: 4641756f6f5aa4d6891f0ddfb8352ef1
-      size: 305
+      md5: 8f4cd9f6555623d2413cacca86728f47
+      size: 433
   setup:
     cmd: "python -m venv .venv\n.venv\\Scripts\\python -m pip install --upgrade pip\n\
       .venv\\Scripts\\python -m pip install -r requirements.txt\n"

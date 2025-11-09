@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import numpy as np
 from types import SimpleNamespace
@@ -28,6 +29,18 @@ def test_retrain_and_evaluate_best_minimal(tmp_path):
     best_params = {"classifier": "RandomForest", "rf_n_estimators": 5, "rf_max_depth": 3}
     study = DummyStudy(best_params=best_params)
 
-    model, metrics, importance_df = retrain_and_evaluate_best(study, X_train, y_train, X_test, y_test, feature_names=list(X_train.columns), experiment_name="test", tracking_uri=None, parent_from_best_trial=False)
-    assert 'final_accuracy' in metrics
-    assert model is not None
+    # run inside tmp_path to avoid creating/writing repo-level artifacts (models/final_model.pkl)
+    cwd = os.getcwd()
+    os.chdir(tmp_path)
+    try:
+        model, metrics, importance_df = retrain_and_evaluate_best(
+            study, X_train, y_train, X_test, y_test,
+            feature_names=list(X_train.columns),
+            experiment_name="test",
+            tracking_uri=None,
+            parent_from_best_trial=False,
+        )
+        assert 'final_accuracy' in metrics
+        assert model is not None
+    finally:
+        os.chdir(cwd)

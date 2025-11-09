@@ -1,0 +1,1034 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "MLOps Equipo63 - Prediction API",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Health",
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/predict": {
+      "post": {
+        "summary": "Predict single sample",
+        "description": "Predict a single sample.\n\nBody: {\"data\": {\"feature1\": value1, \"feature2\": value2, ...}}",
+        "operationId": "predict_single_predict_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SinglePredictionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SinglePredictionResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/predict_batch": {
+      "post": {
+        "summary": "Batch predictions (JSON or CSV upload)",
+        "description": "Batch predictions.\n\nAccepts either JSON body: {\"instances\": [{...}, {...}, ...]}\nor a CSV file upload (form-data) where each row is a sample.",
+        "operationId": "predict_batch_predict_batch_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_predict_batch_predict_batch_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchPredictionResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BatchPredictionRequest": {
+        "properties": {
+          "instances": {
+            "items": {
+              "$ref": "#/components/schemas/Features"
+            },
+            "type": "array",
+            "title": "Instances"
+          }
+        },
+        "type": "object",
+        "required": [
+          "instances"
+        ],
+        "title": "BatchPredictionRequest",
+        "example": {
+          "instances": [
+            {
+              "n_tokens_content": 100,
+              "n_tokens_title": 10
+            },
+            {
+              "n_tokens_content": 40,
+              "n_tokens_title": 5
+            }
+          ]
+        }
+      },
+      "BatchPredictionResponse": {
+        "properties": {
+          "predictions": {
+            "items": {
+              "$ref": "#/components/schemas/SinglePredictionResponse"
+            },
+            "type": "array",
+            "title": "Predictions"
+          },
+          "n": {
+            "type": "integer",
+            "title": "N",
+            "description": "Number of predictions returned"
+          }
+        },
+        "type": "object",
+        "required": [
+          "predictions",
+          "n"
+        ],
+        "title": "BatchPredictionResponse"
+      },
+      "Body_predict_batch_predict_batch_post": {
+        "properties": {
+          "instances": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BatchPredictionRequest"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "file": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "binary"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "File"
+          }
+        },
+        "type": "object",
+        "title": "Body_predict_batch_predict_batch_post"
+      },
+      "Features": {
+        "properties": {
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Url",
+            "description": "Article URL / unique identifier"
+          },
+          "timedelta": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Timedelta",
+            "description": "Time delta (days) between article publication and dataset reference"
+          },
+          "n_tokens_title": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "N Tokens Title",
+            "description": "Number of tokens in the article title"
+          },
+          "n_tokens_content": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "N Tokens Content",
+            "description": "Number of tokens in the article content/body"
+          },
+          "n_unique_tokens": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "N Unique Tokens",
+            "description": "Fraction or count of unique tokens in the content"
+          },
+          "n_non_stop_words": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "N Non Stop Words",
+            "description": "Number or fraction of non-stop-words in the content"
+          },
+          "n_non_stop_unique_tokens": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "N Non Stop Unique Tokens",
+            "description": "Number or fraction of unique non-stop-words in the content"
+          },
+          "num_hrefs": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Num Hrefs",
+            "description": "Number of external hyperlinks in the article"
+          },
+          "num_self_hrefs": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Num Self Hrefs",
+            "description": "Number of self-referential hyperlinks (same site)"
+          },
+          "num_imgs": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Num Imgs",
+            "description": "Number of images in the article"
+          },
+          "num_videos": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Num Videos",
+            "description": "Number of videos in the article"
+          },
+          "average_token_length": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Average Token Length",
+            "description": "Average token length in characters"
+          },
+          "num_keywords": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Num Keywords",
+            "description": "Number of keywords associated with the article"
+          },
+          "data_channel_is_lifestyle": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data Channel Is Lifestyle",
+            "description": "Is the article from the Lifestyle channel?"
+          },
+          "data_channel_is_entertainment": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data Channel Is Entertainment",
+            "description": "Is the article from the Entertainment channel?"
+          },
+          "data_channel_is_bus": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data Channel Is Bus",
+            "description": "Is the article from the Business channel?"
+          },
+          "data_channel_is_socmed": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data Channel Is Socmed",
+            "description": "Is the article from the Social Media channel?"
+          },
+          "data_channel_is_tech": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data Channel Is Tech",
+            "description": "Is the article from the Tech channel?"
+          },
+          "data_channel_is_world": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data Channel Is World",
+            "description": "Is the article from the World channel?"
+          },
+          "kw_min_min": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kw Min Min",
+            "description": "Keyword metric: minimum of minimums"
+          },
+          "kw_max_min": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kw Max Min",
+            "description": "Keyword metric: maximum of minimums"
+          },
+          "kw_avg_min": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kw Avg Min",
+            "description": "Keyword metric: average of minimums"
+          },
+          "kw_min_max": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kw Min Max",
+            "description": "Keyword metric: minimum of maximums"
+          },
+          "kw_max_max": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kw Max Max",
+            "description": "Keyword metric: maximum of maximums"
+          },
+          "kw_avg_max": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kw Avg Max",
+            "description": "Keyword metric: average of maximums"
+          },
+          "kw_min_avg": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kw Min Avg",
+            "description": "Keyword metric: minimum of averages"
+          },
+          "kw_max_avg": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kw Max Avg",
+            "description": "Keyword metric: maximum of averages"
+          },
+          "kw_avg_avg": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kw Avg Avg",
+            "description": "Keyword metric: average of averages"
+          },
+          "self_reference_min_shares": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Self Reference Min Shares",
+            "description": "Min shares among self-referenced articles"
+          },
+          "self_reference_max_shares": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Self Reference Max Shares",
+            "description": "Max shares among self-referenced articles"
+          },
+          "self_reference_avg_sharess": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Self Reference Avg Sharess",
+            "description": "Avg shares among self-referenced articles (note: original dataset name includes typo 'sharess')"
+          },
+          "weekday_is_monday": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weekday Is Monday",
+            "description": "Published on Monday?"
+          },
+          "weekday_is_tuesday": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weekday Is Tuesday",
+            "description": "Published on Tuesday?"
+          },
+          "weekday_is_wednesday": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weekday Is Wednesday",
+            "description": "Published on Wednesday?"
+          },
+          "weekday_is_thursday": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weekday Is Thursday",
+            "description": "Published on Thursday?"
+          },
+          "weekday_is_friday": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weekday Is Friday",
+            "description": "Published on Friday?"
+          },
+          "weekday_is_saturday": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weekday Is Saturday",
+            "description": "Published on Saturday?"
+          },
+          "weekday_is_sunday": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weekday Is Sunday",
+            "description": "Published on Sunday?"
+          },
+          "is_weekend": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Weekend",
+            "description": "Published on weekend?"
+          },
+          "LDA_00": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lda 00",
+            "description": "LDA topic 0 proportion"
+          },
+          "LDA_01": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lda 01",
+            "description": "LDA topic 1 proportion"
+          },
+          "LDA_02": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lda 02",
+            "description": "LDA topic 2 proportion"
+          },
+          "LDA_03": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lda 03",
+            "description": "LDA topic 3 proportion"
+          },
+          "LDA_04": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lda 04",
+            "description": "LDA topic 4 proportion"
+          },
+          "global_subjectivity": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Global Subjectivity",
+            "description": "Subjectivity score of the content (0 objective - 1 subjective)"
+          },
+          "global_sentiment_polarity": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Global Sentiment Polarity",
+            "description": "Sentiment polarity of content (negative to positive)"
+          },
+          "global_rate_positive_words": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Global Rate Positive Words",
+            "description": "Rate of positive words in content"
+          },
+          "global_rate_negative_words": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Global Rate Negative Words",
+            "description": "Rate of negative words in content"
+          },
+          "rate_positive_words": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rate Positive Words",
+            "description": "Rate of positive words (normalized)"
+          },
+          "rate_negative_words": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rate Negative Words",
+            "description": "Rate of negative words (normalized)"
+          },
+          "avg_positive_polarity": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avg Positive Polarity",
+            "description": "Average polarity across positive words"
+          },
+          "min_positive_polarity": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Min Positive Polarity",
+            "description": "Minimum positive-word polarity"
+          },
+          "max_positive_polarity": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Positive Polarity",
+            "description": "Maximum positive-word polarity"
+          },
+          "avg_negative_polarity": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avg Negative Polarity",
+            "description": "Average polarity across negative words"
+          },
+          "min_negative_polarity": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Min Negative Polarity",
+            "description": "Minimum negative-word polarity"
+          },
+          "max_negative_polarity": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Negative Polarity",
+            "description": "Maximum negative-word polarity"
+          },
+          "title_subjectivity": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title Subjectivity",
+            "description": "Subjectivity score of the title"
+          },
+          "title_sentiment_polarity": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title Sentiment Polarity",
+            "description": "Sentiment polarity of the title"
+          },
+          "abs_title_subjectivity": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Abs Title Subjectivity",
+            "description": "Absolute subjectivity of the title"
+          },
+          "abs_title_sentiment_polarity": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Abs Title Sentiment Polarity",
+            "description": "Absolute sentiment polarity of the title"
+          },
+          "shares": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shares",
+            "description": "Raw number of shares (target). Note: dataset uses popular = shares > 1400"
+          }
+        },
+        "type": "object",
+        "title": "Features",
+        "description": "Typed feature set for the Online News Popularity dataset.\n\nAll fields are optional to allow partial inputs; types and descriptions are set\nto improve OpenAPI documentation and runtime validation.",
+        "example": {
+          "LDA_02": 0.44,
+          "data_channel_is_entertainment": true,
+          "n_tokens_content": 100,
+          "n_tokens_title": 10,
+          "shares": 1600
+        }
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "SinglePredictionRequest": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Features"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "SinglePredictionRequest",
+        "example": {
+          "data": {
+            "n_tokens_content": 100,
+            "n_tokens_title": 10
+          }
+        }
+      },
+      "SinglePredictionResponse": {
+        "properties": {
+          "prediction": {
+            "title": "Prediction",
+            "description": "Model prediction (label or numeric)."
+          },
+          "probability": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Probability",
+            "description": "Probability for positive class (binary)"
+          },
+          "probabilities": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Probabilities",
+            "description": "Probabilities for each class (multi-class)"
+          }
+        },
+        "type": "object",
+        "required": [
+          "prediction"
+        ],
+        "title": "SinglePredictionResponse"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}

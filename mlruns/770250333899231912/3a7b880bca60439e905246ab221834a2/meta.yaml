@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/Users/betoa/Documents/TEC/MLOPS/Gits/Fase2/MLOps_Equipo_63/mlruns/770250333899231912/3a7b880bca60439e905246ab221834a2/artifacts
+end_time: 1762651659716
+entry_point_name: ''
+experiment_id: '770250333899231912'
+lifecycle_stage: active
+run_id: 3a7b880bca60439e905246ab221834a2
+run_name: Final_XGBoost_Model
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1762651647249
+status: 3
+tags: []
+user_id: Diego
