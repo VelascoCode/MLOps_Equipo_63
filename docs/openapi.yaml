@@ -1,0 +1,490 @@
+openapi: 3.1.0
+info:
+  title: MLOps Equipo63 - Prediction API
+  version: 0.1.0
+paths:
+  /health:
+    get:
+      summary: Health
+      operationId: health_health_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /predict:
+    post:
+      summary: Predict single sample
+      description: 'Predict a single sample.
+
+
+        Body: {"data": {"feature1": value1, "feature2": value2, ...}}'
+      operationId: predict_single_predict_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SinglePredictionRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SinglePredictionResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /predict_batch:
+    post:
+      summary: Batch predictions (JSON or CSV upload)
+      description: 'Batch predictions.
+
+
+        Accepts either JSON body: {"instances": [{...}, {...}, ...]}
+
+        or a CSV file upload (form-data) where each row is a sample.'
+      operationId: predict_batch_predict_batch_post
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Body_predict_batch_predict_batch_post'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchPredictionResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    BatchPredictionRequest:
+      properties:
+        instances:
+          items:
+            $ref: '#/components/schemas/Features'
+          type: array
+          title: Instances
+      type: object
+      required:
+      - instances
+      title: BatchPredictionRequest
+      example:
+        instances:
+        - n_tokens_content: 100
+          n_tokens_title: 10
+        - n_tokens_content: 40
+          n_tokens_title: 5
+    BatchPredictionResponse:
+      properties:
+        predictions:
+          items:
+            $ref: '#/components/schemas/SinglePredictionResponse'
+          type: array
+          title: Predictions
+        n:
+          type: integer
+          title: N
+          description: Number of predictions returned
+      type: object
+      required:
+      - predictions
+      - n
+      title: BatchPredictionResponse
+    Body_predict_batch_predict_batch_post:
+      properties:
+        instances:
+          anyOf:
+          - $ref: '#/components/schemas/BatchPredictionRequest'
+          - type: 'null'
+        file:
+          anyOf:
+          - type: string
+            format: binary
+          - type: 'null'
+          title: File
+      type: object
+      title: Body_predict_batch_predict_batch_post
+    Features:
+      properties:
+        n_tokens_title:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: N Tokens Title
+        n_tokens_content:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: N Tokens Content
+        n_unique_tokens:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: N Unique Tokens
+        n_non_stop_words:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: N Non Stop Words
+        n_non_stop_unique_tokens:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: N Non Stop Unique Tokens
+        num_hrefs:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Num Hrefs
+        num_self_hrefs:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Num Self Hrefs
+        num_imgs:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Num Imgs
+        num_videos:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Num Videos
+        average_token_length:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Average Token Length
+        num_keywords:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Num Keywords
+        data_channel_is_lifestyle:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Data Channel Is Lifestyle
+        data_channel_is_entertainment:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Data Channel Is Entertainment
+        data_channel_is_bus:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Data Channel Is Bus
+        data_channel_is_socmed:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Data Channel Is Socmed
+        data_channel_is_tech:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Data Channel Is Tech
+        data_channel_is_world:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Data Channel Is World
+        kw_min_min:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Kw Min Min
+        kw_max_min:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Kw Max Min
+        kw_avg_min:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Kw Avg Min
+        kw_min_max:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Kw Min Max
+        kw_max_max:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Kw Max Max
+        kw_avg_max:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Kw Avg Max
+        kw_min_avg:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Kw Min Avg
+        kw_max_avg:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Kw Max Avg
+        kw_avg_avg:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Kw Avg Avg
+        self_reference_min_shares:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Self Reference Min Shares
+        self_reference_max_shares:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Self Reference Max Shares
+        self_reference_avg_sharess:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Self Reference Avg Sharess
+        weekday_is_monday:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Weekday Is Monday
+        weekday_is_tuesday:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Weekday Is Tuesday
+        weekday_is_wednesday:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Weekday Is Wednesday
+        weekday_is_thursday:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Weekday Is Thursday
+        weekday_is_friday:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Weekday Is Friday
+        weekday_is_saturday:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Weekday Is Saturday
+        weekday_is_sunday:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Weekday Is Sunday
+        is_weekend:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Is Weekend
+        LDA_00:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Lda 00
+        LDA_01:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Lda 01
+        LDA_02:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Lda 02
+        LDA_03:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Lda 03
+        LDA_04:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Lda 04
+        global_subjectivity:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Global Subjectivity
+        global_sentiment_polarity:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Global Sentiment Polarity
+        global_rate_positive_words:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Global Rate Positive Words
+        global_rate_negative_words:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Global Rate Negative Words
+        rate_positive_words:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Rate Positive Words
+        rate_negative_words:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Rate Negative Words
+        avg_positive_polarity:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Avg Positive Polarity
+        min_positive_polarity:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Min Positive Polarity
+        max_positive_polarity:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Max Positive Polarity
+        avg_negative_polarity:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Avg Negative Polarity
+        min_negative_polarity:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Min Negative Polarity
+        max_negative_polarity:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Max Negative Polarity
+        title_subjectivity:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Title Subjectivity
+        title_sentiment_polarity:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Title Sentiment Polarity
+        abs_title_subjectivity:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Abs Title Subjectivity
+        abs_title_sentiment_polarity:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Abs Title Sentiment Polarity
+        mixed_type_col:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Mixed Type Col
+      type: object
+      title: Features
+      example:
+        n_non_stop_unique_tokens: 0.0
+        n_non_stop_words: 0.0
+        n_tokens_content: 0.0
+        n_tokens_title: 0.0
+        n_unique_tokens: 0.0
+        num_hrefs: 0.0
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    SinglePredictionRequest:
+      properties:
+        data:
+          $ref: '#/components/schemas/Features'
+      type: object
+      required:
+      - data
+      title: SinglePredictionRequest
+      example:
+        data:
+          n_tokens_content: 100
+          n_tokens_title: 10
+    SinglePredictionResponse:
+      properties:
+        prediction:
+          title: Prediction
+          description: Model prediction (label or numeric).
+        probability:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Probability
+          description: Probability for positive class (binary)
+        probabilities:
+          anyOf:
+          - items:
+              type: number
+            type: array
+          - type: 'null'
+          title: Probabilities
+          description: Probabilities for each class (multi-class)
+      type: object
+      required:
+      - prediction
+      title: SinglePredictionResponse
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
