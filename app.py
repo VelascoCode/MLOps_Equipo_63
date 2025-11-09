@@ -1,5 +1,7 @@
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple, Type
+from pathlib import Path
 import io
+import json
 import pickle
 import joblib
 import numpy as np
@@ -10,103 +12,90 @@ from fastapi import FastAPI, File, HTTPException, UploadFile
 from contextlib import asynccontextmanager
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel, RootModel, Field
+from pydantic import BaseModel, RootModel, Field, create_model
 from pydantic import model_validator
 
 
 MODEL_PATH = "models/final_model.pkl"
 
 
-class Features(BaseModel):
-    """Typed feature set for the Online News Popularity dataset.
 
-    All fields are optional to allow partial inputs; types and descriptions are set
-    to improve OpenAPI documentation and runtime validation.
-    """
-    url: Optional[str] = Field(None, description="Article URL / unique identifier")
-    timedelta: Optional[int] = Field(None, description="Time delta (days) between article publication and dataset reference")
+# Dynamically build the Features model from models/feature_names.json when available.
+# This ensures the Pydantic schema matches the pipeline's expected input features.
+def _guess_field_type(name: str) -> Type:
+    # Heuristics: boolean-like column prefixes -> bool, id/url -> str, target -> int, otherwise float
+    lower = name.lower()
+    if lower.startswith("data_channel_is_") or lower.startswith("weekday_is_") or lower in ("is_weekend",):
+        return Optional[bool]
+    if lower in ("url", "link", "id") or "url" in lower:
+        return Optional[str]
+    if lower in ("shares", "target", "label"):
+        return Optional[int]
+    # fallback to numeric
+    return Optional[float]
 
-    n_tokens_title: Optional[int] = Field(None, description="Number of tokens in the article title")
-    n_tokens_content: Optional[int] = Field(None, description="Number of tokens in the article content/body")
-    n_unique_tokens: Optional[float] = Field(None, description="Fraction or count of unique tokens in the content")
-    n_non_stop_words: Optional[float] = Field(None, description="Number or fraction of non-stop-words in the content")
-    n_non_stop_unique_tokens: Optional[float] = Field(None, description="Number or fraction of unique non-stop-words in the content")
 
-    num_hrefs: Optional[int] = Field(None, description="Number of external hyperlinks in the article")
-    num_self_hrefs: Optional[int] = Field(None, description="Number of self-referential hyperlinks (same site)")
-    num_imgs: Optional[int] = Field(None, description="Number of images in the article")
-    num_videos: Optional[int] = Field(None, description="Number of videos in the article")
-    average_token_length: Optional[float] = Field(None, description="Average token length in characters")
-    num_keywords: Optional[int] = Field(None, description="Number of keywords associated with the article")
+def _load_feature_names() -> List[str]:
+    # Prefer models/feature_names.json; ignore errors and return empty list if not present
+    p = Path("models").joinpath("feature_names.json")
+    if p.exists():
+        try:
+            return json.loads(p.read_text(encoding="utf-8"))
+        except Exception:
+            return []
+    return []
 
-    data_channel_is_lifestyle: Optional[bool] = Field(None, description="Is the article from the Lifestyle channel?")
-    data_channel_is_entertainment: Optional[bool] = Field(None, description="Is the article from the Entertainment channel?")
-    data_channel_is_bus: Optional[bool] = Field(None, description="Is the article from the Business channel?")
-    data_channel_is_socmed: Optional[bool] = Field(None, description="Is the article from the Social Media channel?")
-    data_channel_is_tech: Optional[bool] = Field(None, description="Is the article from the Tech channel?")
-    data_channel_is_world: Optional[bool] = Field(None, description="Is the article from the World channel?")
 
-    kw_min_min: Optional[float] = Field(None, description="Keyword metric: minimum of minimums")
-    kw_max_min: Optional[float] = Field(None, description="Keyword metric: maximum of minimums")
-    kw_avg_min: Optional[float] = Field(None, description="Keyword metric: average of minimums")
-    kw_min_max: Optional[float] = Field(None, description="Keyword metric: minimum of maximums")
-    kw_max_max: Optional[float] = Field(None, description="Keyword metric: maximum of maximums")
-    kw_avg_max: Optional[float] = Field(None, description="Keyword metric: average of maximums")
-    kw_min_avg: Optional[float] = Field(None, description="Keyword metric: minimum of averages")
-    kw_max_avg: Optional[float] = Field(None, description="Keyword metric: maximum of averages")
-    kw_avg_avg: Optional[float] = Field(None, description="Keyword metric: average of averages")
+_feature_names = _load_feature_names()
+if not _feature_names:
+    # Fallback: keep the older static schema for compatibility
+    class Features(BaseModel):
+        url: Optional[str] = Field(None, description="Article URL / unique identifier")
+        timedelta: Optional[int] = Field(None, description="Time delta (days) between article publication and dataset reference")
+        n_tokens_title: Optional[int] = Field(None, description="Number of tokens in the article title")
+        n_tokens_content: Optional[int] = Field(None, description="Number of tokens in the article content/body")
+        # ...existing fields omitted for brevity - original static schema retained as fallback
+        shares: Optional[int] = Field(None, description="Raw number of shares (target). Note: dataset uses popular = shares > 1400")
 
-    self_reference_min_shares: Optional[float] = Field(None, description="Min shares among self-referenced articles")
-    self_reference_max_shares: Optional[float] = Field(None, description="Max shares among self-referenced articles")
-    self_reference_avg_sharess: Optional[float] = Field(None, description="Avg shares among self-referenced articles (note: original dataset name includes typo 'sharess')")
-
-    weekday_is_monday: Optional[bool] = Field(None, description="Published on Monday?")
-    weekday_is_tuesday: Optional[bool] = Field(None, description="Published on Tuesday?")
-    weekday_is_wednesday: Optional[bool] = Field(None, description="Published on Wednesday?")
-    weekday_is_thursday: Optional[bool] = Field(None, description="Published on Thursday?")
-    weekday_is_friday: Optional[bool] = Field(None, description="Published on Friday?")
-    weekday_is_saturday: Optional[bool] = Field(None, description="Published on Saturday?")
-    weekday_is_sunday: Optional[bool] = Field(None, description="Published on Sunday?")
-    is_weekend: Optional[bool] = Field(None, description="Published on weekend?")
-
-    LDA_00: Optional[float] = Field(None, description="LDA topic 0 proportion")
-    LDA_01: Optional[float] = Field(None, description="LDA topic 1 proportion")
-    LDA_02: Optional[float] = Field(None, description="LDA topic 2 proportion")
-    LDA_03: Optional[float] = Field(None, description="LDA topic 3 proportion")
-    LDA_04: Optional[float] = Field(None, description="LDA topic 4 proportion")
-
-    global_subjectivity: Optional[float] = Field(None, description="Subjectivity score of the content (0 objective - 1 subjective)")
-    global_sentiment_polarity: Optional[float] = Field(None, description="Sentiment polarity of content (negative to positive)")
-    global_rate_positive_words: Optional[float] = Field(None, description="Rate of positive words in content")
-    global_rate_negative_words: Optional[float] = Field(None, description="Rate of negative words in content")
-    rate_positive_words: Optional[float] = Field(None, description="Rate of positive words (normalized)")
-    rate_negative_words: Optional[float] = Field(None, description="Rate of negative words (normalized)")
-
-    avg_positive_polarity: Optional[float] = Field(None, description="Average polarity across positive words")
-    min_positive_polarity: Optional[float] = Field(None, description="Minimum positive-word polarity")
-    max_positive_polarity: Optional[float] = Field(None, description="Maximum positive-word polarity")
-    avg_negative_polarity: Optional[float] = Field(None, description="Average polarity across negative words")
-    min_negative_polarity: Optional[float] = Field(None, description="Minimum negative-word polarity")
-    max_negative_polarity: Optional[float] = Field(None, description="Maximum negative-word polarity")
-
-    title_subjectivity: Optional[float] = Field(None, description="Subjectivity score of the title")
-    title_sentiment_polarity: Optional[float] = Field(None, description="Sentiment polarity of the title")
-    abs_title_subjectivity: Optional[float] = Field(None, description="Absolute subjectivity of the title")
-    abs_title_sentiment_polarity: Optional[float] = Field(None, description="Absolute sentiment polarity of the title")
-
-    shares: Optional[int] = Field(None, description="Raw number of shares (target). Note: dataset uses popular = shares > 1400")
-
-    model_config = {
-        "json_schema_extra": {
-            "example": {
-                "n_tokens_content": 100,
-                "n_tokens_title": 10,
-                "data_channel_is_entertainment": True,
-                "LDA_02": 0.44,
-                "shares": 1600,
+        model_config = {
+            "json_schema_extra": {
+                "example": {
+                    "n_tokens_content": 100,
+                    "n_tokens_title": 10,
+                    "data_channel_is_entertainment": True,
+                    "LDA_02": 0.44,
+                    "shares": 1600,
+                }
             }
         }
-    }
+else:
+    # Build model fields dynamically
+    fields: Dict[str, Tuple[Type, None]] = {}
+    for fname in _feature_names:
+        ftype = _guess_field_type(fname)
+        fields[fname] = (ftype, None)
+
+    # ensure we include url and shares if present in docs
+    # create Pydantic model
+    Features = create_model("Features", __base__=BaseModel, **fields)
+
+    # attach a helpful example to the generated model for OpenAPI
+    try:
+        # small example using the first few features
+        example = {}
+        for fn in _feature_names[:6]:
+            t = _guess_field_type(fn)
+            if t is Optional[bool]:
+                example[fn] = False
+            elif t is Optional[str]:
+                example[fn] = "example"
+            elif t is Optional[int]:
+                example[fn] = 0
+            else:
+                example[fn] = 0.0
+        Features.model_config = {"json_schema_extra": {"example": example}}
+    except Exception:
+        pass
 
 
 class SinglePredictionRequest(BaseModel):

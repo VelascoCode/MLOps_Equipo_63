@@ -1,10 +1,20 @@
 import sys
+import os
+import tempfile
 from pathlib import Path
 
 # Ensure the project root is on sys.path so tests can import the package
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
+
+# Safety: ensure tests do not write to the repository-level mlruns/ directory
+# Create a temporary directory for MLflow tracking for the duration of the
+# test session and expose it via the standard environment variable. Use a
+# plain path (not a file:// URI) because project code will convert the path
+# to a URI via Path(...).as_uri().
+_TEST_MLRUNS_DIR = tempfile.mkdtemp(prefix="pytest_mlruns_")
+os.environ.setdefault("MLFLOW_TRACKING_URI", str(_TEST_MLRUNS_DIR))
 
 # Provide a minimal stub for mlflow if it's not installed so imports succeed during tests
 try:
@@ -28,7 +38,7 @@ except Exception:
     fake_mlflow.set_tracking_uri = _noop
     fake_mlflow.set_registry_uri = _noop
     fake_mlflow.set_experiment = _noop
-    fake_mlflow.get_tracking_uri = lambda: "file://mlruns"
+    fake_mlflow.get_tracking_uri = lambda: os.environ.get("MLFLOW_TRACKING_URI", "mlruns")
     fake_mlflow.get_experiment_by_name = lambda name: types.SimpleNamespace(experiment_id="1")
     fake_mlflow.search_runs = lambda experiment_ids=None: pd.DataFrame({"metrics.final_auc": [0.1], "run_id": ["r1"]})
     fake_mlflow.start_run = lambda *a, **k: _DummyRunCtx()

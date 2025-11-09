@@ -181,53 +181,27 @@
       },
       "Features": {
         "properties": {
-          "url": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Url",
-            "description": "Article URL / unique identifier"
-          },
-          "timedelta": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Timedelta",
-            "description": "Time delta (days) between article publication and dataset reference"
-          },
           "n_tokens_title": {
             "anyOf": [
               {
-                "type": "integer"
+                "type": "number"
               },
               {
                 "type": "null"
               }
             ],
-            "title": "N Tokens Title",
-            "description": "Number of tokens in the article title"
+            "title": "N Tokens Title"
           },
           "n_tokens_content": {
             "anyOf": [
               {
-                "type": "integer"
+                "type": "number"
               },
               {
                 "type": "null"
               }
             ],
-            "title": "N Tokens Content",
-            "description": "Number of tokens in the article content/body"
+            "title": "N Tokens Content"
           },
           "n_unique_tokens": {
             "anyOf": [
@@ -238,8 +212,7 @@
                 "type": "null"
               }
             ],
-            "title": "N Unique Tokens",
-            "description": "Fraction or count of unique tokens in the content"
+            "title": "N Unique Tokens"
           },
           "n_non_stop_words": {
             "anyOf": [
@@ -250,8 +223,7 @@
                 "type": "null"
               }
             ],
-            "title": "N Non Stop Words",
-            "description": "Number or fraction of non-stop-words in the content"
+            "title": "N Non Stop Words"
           },
           "n_non_stop_unique_tokens": {
             "anyOf": [
@@ -262,56 +234,51 @@
                 "type": "null"
               }
             ],
-            "title": "N Non Stop Unique Tokens",
-            "description": "Number or fraction of unique non-stop-words in the content"
+            "title": "N Non Stop Unique Tokens"
           },
           "num_hrefs": {
             "anyOf": [
               {
-                "type": "integer"
+                "type": "number"
               },
               {
                 "type": "null"
               }
             ],
-            "title": "Num Hrefs",
-            "description": "Number of external hyperlinks in the article"
+            "title": "Num Hrefs"
           },
           "num_self_hrefs": {
             "anyOf": [
               {
-                "type": "integer"
+                "type": "number"
               },
               {
                 "type": "null"
               }
             ],
-            "title": "Num Self Hrefs",
-            "description": "Number of self-referential hyperlinks (same site)"
+            "title": "Num Self Hrefs"
           },
           "num_imgs": {
             "anyOf": [
               {
-                "type": "integer"
+                "type": "number"
               },
               {
                 "type": "null"
               }
             ],
-            "title": "Num Imgs",
-            "description": "Number of images in the article"
+            "title": "Num Imgs"
           },
           "num_videos": {
             "anyOf": [
               {
-                "type": "integer"
+                "type": "number"
               },
               {
                 "type": "null"
               }
             ],
-            "title": "Num Videos",
-            "description": "Number of videos in the article"
+            "title": "Num Videos"
           },
           "average_token_length": {
             "anyOf": [
@@ -322,20 +289,18 @@
                 "type": "null"
               }
             ],
-            "title": "Average Token Length",
-            "description": "Average token length in characters"
+            "title": "Average Token Length"
           },
           "num_keywords": {
             "anyOf": [
               {
-                "type": "integer"
+                "type": "number"
               },
               {
                 "type": "null"
               }
             ],
-            "title": "Num Keywords",
-            "description": "Number of keywords associated with the article"
+            "title": "Num Keywords"
           },
           "data_channel_is_lifestyle": {
             "anyOf": [
@@ -346,8 +311,7 @@
                 "type": "null"
               }
             ],
-            "title": "Data Channel Is Lifestyle",
-            "description": "Is the article from the Lifestyle channel?"
+            "title": "Data Channel Is Lifestyle"
           },
           "data_channel_is_entertainment": {
             "anyOf": [
@@ -358,8 +322,7 @@
                 "type": "null"
               }
             ],
-            "title": "Data Channel Is Entertainment",
-            "description": "Is the article from the Entertainment channel?"
+            "title": "Data Channel Is Entertainment"
           },
           "data_channel_is_bus": {
             "anyOf": [
@@ -370,8 +333,7 @@
                 "type": "null"
               }
             ],
-            "title": "Data Channel Is Bus",
-            "description": "Is the article from the Business channel?"
+            "title": "Data Channel Is Bus"
           },
           "data_channel_is_socmed": {
             "anyOf": [
@@ -382,8 +344,7 @@
                 "type": "null"
               }
             ],
-            "title": "Data Channel Is Socmed",
-            "description": "Is the article from the Social Media channel?"
+            "title": "Data Channel Is Socmed"
           },
           "data_channel_is_tech": {
             "anyOf": [
@@ -394,8 +355,7 @@
                 "type": "null"
               }
             ],
-            "title": "Data Channel Is Tech",
-            "description": "Is the article from the Tech channel?"
+            "title": "Data Channel Is Tech"
           },
           "data_channel_is_world": {
             "anyOf": [
@@ -406,8 +366,7 @@
                 "type": "null"
               }
             ],
-            "title": "Data Channel Is World",
-            "description": "Is the article from the World channel?"
+            "title": "Data Channel Is World"
           },
           "kw_min_min": {
             "anyOf": [
@@ -418,8 +377,7 @@
                 "type": "null"
               }
             ],
-            "title": "Kw Min Min",
-            "description": "Keyword metric: minimum of minimums"
+            "title": "Kw Min Min"
           },
           "kw_max_min": {
             "anyOf": [
@@ -430,8 +388,7 @@
                 "type": "null"
               }
             ],
-            "title": "Kw Max Min",
-            "description": "Keyword metric: maximum of minimums"
+            "title": "Kw Max Min"
           },
           "kw_avg_min": {
             "anyOf": [
@@ -442,8 +399,7 @@
                 "type": "null"
               }
             ],
-            "title": "Kw Avg Min",
-            "description": "Keyword metric: average of minimums"
+            "title": "Kw Avg Min"
           },
           "kw_min_max": {
             "anyOf": [
@@ -454,8 +410,7 @@
                 "type": "null"
               }
             ],
-            "title": "Kw Min Max",
-            "description": "Keyword metric: minimum of maximums"
+            "title": "Kw Min Max"
           },
           "kw_max_max": {
             "anyOf": [
@@ -466,8 +421,7 @@
                 "type": "null"
               }
             ],
-            "title": "Kw Max Max",
-            "description": "Keyword metric: maximum of maximums"
+            "title": "Kw Max Max"
           },
           "kw_avg_max": {
             "anyOf": [
@@ -478,8 +432,7 @@
                 "type": "null"
               }
             ],
-            "title": "Kw Avg Max",
-            "description": "Keyword metric: average of maximums"
+            "title": "Kw Avg Max"
           },
           "kw_min_avg": {
             "anyOf": [
@@ -490,8 +443,7 @@
                 "type": "null"
               }
             ],
-            "title": "Kw Min Avg",
-            "description": "Keyword metric: minimum of averages"
+            "title": "Kw Min Avg"
           },
           "kw_max_avg": {
             "anyOf": [
@@ -502,8 +454,7 @@
                 "type": "null"
               }
             ],
-            "title": "Kw Max Avg",
-            "description": "Keyword metric: maximum of averages"
+            "title": "Kw Max Avg"
           },
           "kw_avg_avg": {
             "anyOf": [
@@ -514,8 +465,7 @@
                 "type": "null"
               }
             ],
-            "title": "Kw Avg Avg",
-            "description": "Keyword metric: average of averages"
+            "title": "Kw Avg Avg"
           },
           "self_reference_min_shares": {
             "anyOf": [
@@ -526,8 +476,7 @@
                 "type": "null"
               }
             ],
-            "title": "Self Reference Min Shares",
-            "description": "Min shares among self-referenced articles"
+            "title": "Self Reference Min Shares"
           },
           "self_reference_max_shares": {
             "anyOf": [
@@ -538,8 +487,7 @@
                 "type": "null"
               }
             ],
-            "title": "Self Reference Max Shares",
-            "description": "Max shares among self-referenced articles"
+            "title": "Self Reference Max Shares"
           },
           "self_reference_avg_sharess": {
             "anyOf": [
@@ -550,8 +498,7 @@
                 "type": "null"
               }
             ],
-            "title": "Self Reference Avg Sharess",
-            "description": "Avg shares among self-referenced articles (note: original dataset name includes typo 'sharess')"
+            "title": "Self Reference Avg Sharess"
           },
           "weekday_is_monday": {
             "anyOf": [
@@ -562,8 +509,7 @@
                 "type": "null"
               }
             ],
-            "title": "Weekday Is Monday",
-            "description": "Published on Monday?"
+            "title": "Weekday Is Monday"
           },
           "weekday_is_tuesday": {
             "anyOf": [
@@ -574,8 +520,7 @@
                 "type": "null"
               }
             ],
-            "title": "Weekday Is Tuesday",
-            "description": "Published on Tuesday?"
+            "title": "Weekday Is Tuesday"
           },
           "weekday_is_wednesday": {
             "anyOf": [
@@ -586,8 +531,7 @@
                 "type": "null"
               }
             ],
-            "title": "Weekday Is Wednesday",
-            "description": "Published on Wednesday?"
+            "title": "Weekday Is Wednesday"
           },
           "weekday_is_thursday": {
             "anyOf": [
@@ -598,8 +542,7 @@
                 "type": "null"
               }
             ],
-            "title": "Weekday Is Thursday",
-            "description": "Published on Thursday?"
+            "title": "Weekday Is Thursday"
           },
           "weekday_is_friday": {
             "anyOf": [
@@ -610,8 +553,7 @@
                 "type": "null"
               }
             ],
-            "title": "Weekday Is Friday",
-            "description": "Published on Friday?"
+            "title": "Weekday Is Friday"
           },
           "weekday_is_saturday": {
             "anyOf": [
@@ -622,8 +564,7 @@
                 "type": "null"
               }
             ],
-            "title": "Weekday Is Saturday",
-            "description": "Published on Saturday?"
+            "title": "Weekday Is Saturday"
           },
           "weekday_is_sunday": {
             "anyOf": [
@@ -634,8 +575,7 @@
                 "type": "null"
               }
             ],
-            "title": "Weekday Is Sunday",
-            "description": "Published on Sunday?"
+            "title": "Weekday Is Sunday"
           },
           "is_weekend": {
             "anyOf": [
@@ -646,8 +586,7 @@
                 "type": "null"
               }
             ],
-            "title": "Is Weekend",
-            "description": "Published on weekend?"
+            "title": "Is Weekend"
           },
           "LDA_00": {
             "anyOf": [
@@ -658,8 +597,7 @@
                 "type": "null"
               }
             ],
-            "title": "Lda 00",
-            "description": "LDA topic 0 proportion"
+            "title": "Lda 00"
           },
           "LDA_01": {
             "anyOf": [
@@ -670,8 +608,7 @@
                 "type": "null"
               }
             ],
-            "title": "Lda 01",
-            "description": "LDA topic 1 proportion"
+            "title": "Lda 01"
           },
           "LDA_02": {
             "anyOf": [
@@ -682,8 +619,7 @@
                 "type": "null"
               }
             ],
-            "title": "Lda 02",
-            "description": "LDA topic 2 proportion"
+            "title": "Lda 02"
           },
           "LDA_03": {
             "anyOf": [
@@ -694,8 +630,7 @@
                 "type": "null"
               }
             ],
-            "title": "Lda 03",
-            "description": "LDA topic 3 proportion"
+            "title": "Lda 03"
           },
           "LDA_04": {
             "anyOf": [
@@ -706,8 +641,7 @@
                 "type": "null"
               }
             ],
-            "title": "Lda 04",
-            "description": "LDA topic 4 proportion"
+            "title": "Lda 04"
           },
           "global_subjectivity": {
             "anyOf": [
@@ -718,8 +652,7 @@
                 "type": "null"
               }
             ],
-            "title": "Global Subjectivity",
-            "description": "Subjectivity score of the content (0 objective - 1 subjective)"
+            "title": "Global Subjectivity"
           },
           "global_sentiment_polarity": {
             "anyOf": [
@@ -730,8 +663,7 @@
                 "type": "null"
               }
             ],
-            "title": "Global Sentiment Polarity",
-            "description": "Sentiment polarity of content (negative to positive)"
+            "title": "Global Sentiment Polarity"
           },
           "global_rate_positive_words": {
             "anyOf": [
@@ -742,8 +674,7 @@
                 "type": "null"
               }
             ],
-            "title": "Global Rate Positive Words",
-            "description": "Rate of positive words in content"
+            "title": "Global Rate Positive Words"
           },
           "global_rate_negative_words": {
             "anyOf": [
@@ -754,8 +685,7 @@
                 "type": "null"
               }
             ],
-            "title": "Global Rate Negative Words",
-            "description": "Rate of negative words in content"
+            "title": "Global Rate Negative Words"
           },
           "rate_positive_words": {
             "anyOf": [
@@ -766,8 +696,7 @@
                 "type": "null"
               }
             ],
-            "title": "Rate Positive Words",
-            "description": "Rate of positive words (normalized)"
+            "title": "Rate Positive Words"
           },
           "rate_negative_words": {
             "anyOf": [
@@ -778,8 +707,7 @@
                 "type": "null"
               }
             ],
-            "title": "Rate Negative Words",
-            "description": "Rate of negative words (normalized)"
+            "title": "Rate Negative Words"
           },
           "avg_positive_polarity": {
             "anyOf": [
@@ -790,8 +718,7 @@
                 "type": "null"
               }
             ],
-            "title": "Avg Positive Polarity",
-            "description": "Average polarity across positive words"
+            "title": "Avg Positive Polarity"
           },
           "min_positive_polarity": {
             "anyOf": [
@@ -802,8 +729,7 @@
                 "type": "null"
               }
             ],
-            "title": "Min Positive Polarity",
-            "description": "Minimum positive-word polarity"
+            "title": "Min Positive Polarity"
           },
           "max_positive_polarity": {
             "anyOf": [
@@ -814,8 +740,7 @@
                 "type": "null"
               }
             ],
-            "title": "Max Positive Polarity",
-            "description": "Maximum positive-word polarity"
+            "title": "Max Positive Polarity"
           },
           "avg_negative_polarity": {
             "anyOf": [
@@ -826,8 +751,7 @@
                 "type": "null"
               }
             ],
-            "title": "Avg Negative Polarity",
-            "description": "Average polarity across negative words"
+            "title": "Avg Negative Polarity"
           },
           "min_negative_polarity": {
             "anyOf": [
@@ -838,8 +762,7 @@
                 "type": "null"
               }
             ],
-            "title": "Min Negative Polarity",
-            "description": "Minimum negative-word polarity"
+            "title": "Min Negative Polarity"
           },
           "max_negative_polarity": {
             "anyOf": [
@@ -850,8 +773,7 @@
                 "type": "null"
               }
             ],
-            "title": "Max Negative Polarity",
-            "description": "Maximum negative-word polarity"
+            "title": "Max Negative Polarity"
           },
           "title_subjectivity": {
             "anyOf": [
@@ -862,8 +784,7 @@
                 "type": "null"
               }
             ],
-            "title": "Title Subjectivity",
-            "description": "Subjectivity score of the title"
+            "title": "Title Subjectivity"
           },
           "title_sentiment_polarity": {
             "anyOf": [
@@ -874,8 +795,7 @@
                 "type": "null"
               }
             ],
-            "title": "Title Sentiment Polarity",
-            "description": "Sentiment polarity of the title"
+            "title": "Title Sentiment Polarity"
           },
           "abs_title_subjectivity": {
             "anyOf": [
@@ -886,8 +806,7 @@
                 "type": "null"
               }
             ],
-            "title": "Abs Title Subjectivity",
-            "description": "Absolute subjectivity of the title"
+            "title": "Abs Title Subjectivity"
           },
           "abs_title_sentiment_polarity": {
             "anyOf": [
@@ -898,31 +817,29 @@
                 "type": "null"
               }
             ],
-            "title": "Abs Title Sentiment Polarity",
-            "description": "Absolute sentiment polarity of the title"
+            "title": "Abs Title Sentiment Polarity"
           },
-          "shares": {
+          "mixed_type_col": {
             "anyOf": [
               {
-                "type": "integer"
+                "type": "number"
               },
               {
                 "type": "null"
               }
             ],
-            "title": "Shares",
-            "description": "Raw number of shares (target). Note: dataset uses popular = shares > 1400"
+            "title": "Mixed Type Col"
           }
         },
         "type": "object",
         "title": "Features",
-        "description": "Typed feature set for the Online News Popularity dataset.\n\nAll fields are optional to allow partial inputs; types and descriptions are set\nto improve OpenAPI documentation and runtime validation.",
         "example": {
-          "LDA_02": 0.44,
-          "data_channel_is_entertainment": true,
-          "n_tokens_content": 100,
-          "n_tokens_title": 10,
-          "shares": 1600
+          "n_non_stop_unique_tokens": 0.0,
+          "n_non_stop_words": 0.0,
+          "n_tokens_content": 0.0,
+          "n_tokens_title": 0.0,
+          "n_unique_tokens": 0.0,
+          "num_hrefs": 0.0
         }
       },
       "HTTPValidationError": {
