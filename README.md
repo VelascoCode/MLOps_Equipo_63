@@ -1,236 +1,216 @@
-# MLOps Equipo 63
+# MLOps Equipo 63 — Proyecto y despliegue de un modelo de clasificación de noticias
 
-### Conda/Pip Environment
+Este repositorio recoge el trabajo del Equipo 63: limpieza y preparación de datos, experimentación, búsqueda de hiperparámetros, versionado de modelos y despliegue de una API para servir predicciones.
 
-Instalamos [Conda](https://www.anaconda.com/docs/getting-started/miniconda/main) y creamos un ambiente virtual (mna-mlops) para gestionar todas las librerias de Python con Pip.
+Contenido del README:
 
-```bash
-conda --version
-conda create -n mna-mlops python=3.12.0
-conda activate mna-mlops
+- Instalación mínima
+- Estructura del repositorio y origen (Cookiecutter)
+- Entorno Conda / Pip
+- Git / GitHub
+- AWS (uso para DVC remoto)
+- DVC (versionado de datos)
+- MLflow (experimentos y modelos)
+- Optuna (búsqueda de hiperparámetros)
+- Semilla aleatoria estable
+- Testing (pytest y tests incluidos)
+- FastAPI (servicio y endpoints)
+- Docker y contenerización
+
+## 1) Instalación mínima
+
+Requisitos mínimos para ejecutar y desarrollar:
+
+- Python 3.12.x (recomendado)
+- Git
+- Docker (opcional, para producción/contenerización)
+
+Instalar dependencias (desde la raíz del repo):
+
+```powershell
+# crear/activar entorno (opcional con conda)
+conda create -n env_mlops python=3.12 -y; conda activate env_mlops
+
+# instalar dependencias del proyecto
+pip install -r requirements.txt
 ```
 
------
+## 2) Estructura del repositorio y Cookiecutter
 
-### Cookiecutter Data Science
+Resumen de archivos y carpetas importantes:
 
-Una vez dentro del ambiente virtual de Conda, instalamos la librería de [Cookiecutter Data Science](https://cookiecutter-data-science.drivendata.org) para estructurar el trabajo de acuerdo a los estándares de ciencia de datos:
+- `app.py` — FastAPI app que sirve el modelo
+- `Dockerfile` — imagen multi-stage para producción
+- `dvc.yaml`, `params.yaml` — pipelines y parámetros
+- `train.py` — script de entrenamiento
+- `mlops_equipo_63/` — paquete con código fuente (preprocesado, pipeline, utilidades)
+- `models/` — artefactos de modelo (no siempre incluidos en el repo)
+- `mlruns/` — runs de MLflow (local)
+- `tests/` — suite de tests (pytest)
 
-```bash
-pip install cookiecutter-data-science
-ccds
+Este proyecto sigue la estructura generada por Cookiecutter Data Science (plantilla para proyectos de ciencia de datos). La carpeta `mlops_equipo_63/` contiene la lógica de negocio: carga y preparación de datos (`load_and_preparation.py`), extracción de features (`feature_extraction_from_url.py`), pipeline (`pipeline.py`) y utilidades (MLflow/Optuna helpers).
+
+## 3) Entorno Conda / Pip (recomendado)
+
+Comandos recomendados para desarrollo local en Windows PowerShell:
+
+```powershell
+conda create -n env_mlops python=3.12 -y
+conda activate env_mlops
+pip install -r requirements.txt
 ```
 
-```markdown
-# MLOps Equipo 63
+Si prefieres no usar Conda, crear un virtualenv estándar y luego `pip install -r requirements.txt` también funciona.
 
-### Entorno Conda/Pip
+## 4) Git / GitHub
 
-Este proyecto usa Conda para gestionar el entorno. A continuación se muestran comandos de ejemplo para crear y activar un entorno:
+Buenas prácticas usadas en el proyecto:
 
-```bash
-conda --version
-conda create -n mna-mlops python=3.12.0
-conda activate mna-mlops
-```
+- Ramas por feature/issue
+- Tests automatizados en `tests/`
+- Versionado de artefactos grandes con DVC
 
------
+Comandos básicos:
 
-### Cookiecutter Data Science
-
-Dentro del entorno de Conda instalamos la plantilla Cookiecutter Data Science para crear la estructura del proyecto según buenas prácticas:
-
-```bash
-pip install cookiecutter-data-science
-ccds
-```
-
-Durante la creación se emplearon estas opciones para nuestro repositorio:
-
-```bash
-project_name (project_name): mlops_equipo_63
-repo_name (mlops_equipo_63): mlops_equipo_63
-module_name (mlops_equipo_63): mlops_equipo_63
-author_name (Your name (or your organization/company/team)): Equipo 63
-description (A short description of the project.): Este proyecto tiene como propósito practicar la construcción, organización y despliegue de un sistema de Machine Learning en producción, siguiendo principios de MLOps.
-python_version_number (3.10): 3.12.0
-Select dataset_storage
-    1 - none
-    2 - azure
-    3 - s3
-    4 - gcs
-    Choose from [1/2/3/4] (1): 1
-Select environment_manager
-    1 - virtualenv
-    2 - conda
-    3 - pipenv
-    4 - uv
-    5 - pixi
-    6 - poetry
-    7 - none
-    Choose from [1/2/3/4/5/6/7] (1): 2
-Select dependency_file
-    1 - requirements.txt
-    2 - pyproject.toml
-    3 - environment.yml
-    4 - Pipfile
-    5 - pixi.toml
-    Choose from [1/2/3/4/5] (1): 1
-Select pydata_packages
-    1 - none
-    2 - basic
-    Choose from [1/2] (1): 1
-Select testing_framework
-    1 - none
-    2 - pytest
-    3 - unittest
-    Choose from [1/2/3] (1): 1
-Select linting_and_formatting
-    1 - ruff
-    2 - flake8+black+isort
-    Choose from [1/2] (1): 1
-Select open_source_license
-    1 - No license file
-    2 - MIT
-    3 - BSD-3-Clause
-    Choose from [1/2/3] (1): 2
-Select docs
-    1 - mkdocs
-    2 - none
-    Choose from [1/2] (1): 2
-Select include_code_scaffold
-    1 - Yes
-    2 - No
-    Choose from [1/2] (1): 2
-```
-
-El resultado es una carpeta (`mlops_equipo_63`) con la siguiente estructura:
-
-```txt
-├── LICENSE            <- Licencia open-source (si se escogió una)
-├── Makefile           <- Comandos de conveniencia como `make data` o `make train`
-├── README.md          <- README principal para desarrolladores
-├── data
-│   ├── external       <- Datos de terceros
-│   ├── interim        <- Datos intermedios transformados
-│   ├── processed      <- Conjuntos de datos finales para modelado
-   └── raw            <- Datos originales e inmutables
-│
-├── docs               <- Documentación (mkdocs)
-├── models             <- Modelos entrenados y artefactos relacionados
-├── notebooks          <- Notebooks Jupyter (nombres numerados para orden)
-├── pyproject.toml     <- Configuración del proyecto y herramientas
-├── references         <- Diccionarios de datos y documentación adicional
-├── reports            <- Informes generados (HTML, PDF, etc.)
-│   └── figures        <- Gráficos e imágenes
-├── requirements.txt   <- Dependencias del proyecto
-└── mlops_equipo_63    <- Código fuente del proyecto
-    └── __init__.py    <- Hace el paquete importable
-```
-
------
-
-### Git/GitHub
-
-Para el control de versiones usamos Git y alojamos el repositorio en GitHub: https://github.com/VelascoCode/MLOps_Equipo_63. Después de generar la estructura con Cookiecutter inicializamos Git y empujamos el código:
-
-```bash
-git --version
-
-cd mlops_equipo_63
-
-git init
+```powershell
+git checkout -b feature/mi-feature
 git add .
-git commit -m "CCDS defaults"
-git remote add origin https://github.com/VelascoCode/MLOps_Equipo_63
-git branch -M main
-git push -u origin main
+git commit -m "Descripción breve"
+git push origin feature/mi-feature
 ```
 
------
+## 5) AWS (uso principal: DVC remoto)
 
-### Amazon Web Services (AWS): IAM, S3
+El repositorio está preparado para usar S3 como remoto de DVC. No incluye credenciales.
 
-Para versionar datos utilizamos un bucket de S3 (p. ej. `s3://mlops-equipo-63`). Se creó un rol IAM con permisos de lectura/escritura y usuarios con access keys para acceso por línea de comando.
+Configuración rápida:
 
-Instalación y configuración de AWS CLI:
-
-```bash
-pip install awscli
-
-aws --version
-
+```powershell
 aws configure
-
-AWS Access Key ID [****************5XMO]: 
-AWS Secret Access Key [****************JlOz]:
-Default region name [us-east-1]: us-east-1
-Default output format [json]: json
-```
-
-Comandos útiles para verificar conexión y listar buckets:
-
-```bash
-aws sts get-caller-identity
-aws s3 ls
-```
-
------
-
-### Data Version Control (DVC)
-
-Usamos DVC para versionar los datos y conectar con el bucket S3. Pasos básicos:
-
-```bash
-pip install dvc
-
-dvc --version
-
-cd mlops_equipo_63
-
-dvc init
-git commit -m "Initialize DVC"
-```
-
-Configurar remote en S3:
-
-```bash
-pip install dvc-s3
-
-dvc remote add -d storage s3://mlops-equipo-63
-```
-
-Ejemplo de uso (añadir y empujar un archivo):
-
-```bash
-mkdir -p data/raw && echo -e "id,name,age,city\n1,Alice,25,New York" > data/raw/dummy.csv # (v1)
-
-dvc add data/raw/test.csv # se genera data/raw/dummy.csv.dvc
-git commit -m 'added dummy.csv.dvc file'
+dvc remote add -d storage s3://<tu-bucket>
 dvc push
 ```
 
-Para deshacer cambios o volver a una versión anterior:
+## 6) DVC — Versionado de datos
 
-```bash
-git log --oneline
-git checkout <commit-hash>
+DVC se utiliza para versionar conjuntos de datos y conectar con remotos (S3). El pipeline reproducible está descrito en `dvc.yaml`.
 
+Ejemplos:
+
+```powershell
+dvc init                     # si aún no está inicializado
+dvc add data/raw/online_news_modified.csv
+git add data/raw/online_news_modified.csv.dvc .dvcignore
+git commit -m "Añadido raw data dvc"
+dvc push
+```
+
+Para recuperar datos versionados:
+
+```powershell
 dvc pull
 ```
 
------
+## 7) MLflow — Experimentos y modelos
 
-### MLflow
+MLflow se usa para rastrear experimentos y almacenar modelos (carpeta `mlruns/`).
 
-Usamos MLflow para el versionamiento de modelos. Ejemplo para ejecutar un servidor local de tracking:
+Arrancar un servidor de tracking local (opcional):
 
-```bash
-pip install mlflow
-mlflow server --host 127.0.0.1 --port 8080
+```powershell
+mlflow server --backend-store-uri ./mlruns --default-artifact-root ./mlruns --host 127.0.0.1 --port 5000
 ```
 
-``` 
+Los artefactos y modelos guardados por MLflow pueden exportarse o copiarse a la carpeta `models/` para servirlos desde la API o empaquetarlos en Docker.
 
+## 8) Optuna — Búsqueda de hiperparámetros
 
-Para el versionamiento de los modelos de Machine Learning utilizamos MLflow. Instalamos MLflow en el ambiente virtual de Conda y lo ejecutamos dentro del folder */notebooks* para almacenar los experimentos en esta ruta:
+La optimización de hiperparámetros se implementa con Optuna (ver `mlops_equipo_63/Optuna_Study.py`). Los resultados se registran en MLflow para comparar runs.
+
+Ejecutar estudio Optuna (ejemplo):
+
+```powershell
+python mlops_equipo_63/Optuna_Study.py
+```
+
+## 9) Semilla aleatoria (reproducibilidad)
+
+Para asegurar reproducibilidad el proyecto incluye utilidades para fijar la semilla global (ver `mlops_equipo_63/seed.py`). Usar la semilla consistente en entrenamiento y evaluación ayuda a obtener resultados comparables.
+
+## 10) Testing (pytest)
+
+La suite de pruebas se encuentra en `tests/`. Ejecutar las pruebas con:
+
+```powershell
+pytest -q
+```
+
+Incluye tests para componentes de carga/preparación, EDA, utilidades, MLflow y la API.
+
+## 11) FastAPI — API y endpoints
+
+La API se implementa en `app.py`. Endpoints principales:
+
+- `GET /health` — Estado del servicio y carga del modelo
+- `POST /predict` — Predicción para una sola instancia
+- `POST /predict_batch` — Predicciones en lote (JSON o CSV)
+- `POST /predict_url` — Extrae características desde una URL y devuelve predicción
+
+Levantar la API en desarrollo:
+
+```powershell
+uvicorn app:app --host 0.0.0.0 --port 8000 --reload
+```
+
+Comprobación rápida (PowerShell):
+
+```powershell
+Invoke-RestMethod -Uri http://localhost:8000/health
+```
+
+Notas de implementación:
+
+- `mlops_equipo_63/feature_extraction_from_url.py` contiene la lógica para extraer features desde páginas web.
+- La API carga el modelo desde `models/` al iniciar. En desarrollo, monte `models/` desde el host para poder reemplazar el modelo sin rebuild.
+
+## 12) Docker y contenerización
+
+El `Dockerfile` es multi-stage y optimizado para reducir tamaño final.
+
+Opciones de uso:
+
+- Desarrollo (montar `models/` desde host):
+
+```powershell
+docker build -t ml-service:latest .
+docker run --rm -p 8000:8000 -v ${PWD}\models:/app/models:ro ml-service:latest
+```
+
+- Producción (incluir modelo en la imagen):
+
+1. Copiar los artefactos del modelo (`models/final_model.pkl`, `models/feature_names.json`) en `models/`.
+2. `docker build -t ml-service:latest .`
+3. `docker run --rm -p 8000:8000 ml-service:latest`
+
+Consideraciones:
+
+- Montar `models/` facilita iteración en desarrollo.
+- Incluir el modelo en la imagen es aconsejable para despliegues inmutables.
+
+## Cómo reproducir lo esencial (rápido)
+
+1. Crear entorno e instalar dependencias.
+2. Recuperar datos si están en DVC: `dvc pull`.
+3. Entrenar: `python train.py` o ejecutar el pipeline DVC (`dvc repro`).
+4. Revisar resultados en MLflow (`mlruns/`).
+5. Levantar API: `uvicorn app:app --reload`.
+
+## Archivos y rutas clave
+
+- `app.py` — API
+- `train.py` — Entrenamiento
+- `dvc.yaml`, `params.yaml` — Pipeline y parámetros
+- `mlops_equipo_63/` — Código fuente principal
+- `models/` — Modelos (puede no estar incluido en git)
+- `mlruns/` — Experimentos MLflow locales
+- `tests/` — Pruebas
