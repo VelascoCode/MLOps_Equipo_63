@@ -134,6 +134,14 @@ class BatchPredictionResponse(BaseModel):
     n: int = Field(..., description="Number of predictions returned")
 
 
+class URLPredictionRequest(BaseModel):
+    url: str
+
+    model_config = {
+        "json_schema_extra": {"example": {"url": "https://example.com/article/1"}}
+    }
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Initialize state and attempt to load model at startup
@@ -384,3 +392,41 @@ async def predict_batch(request: Request, instances: Optional[BatchPredictionReq
         results.append(item)
 
     return {"predictions": results, "n": len(results)}
+
+
+
+@app.post("/predict_url", response_model=SinglePredictionResponse, summary="Predict from article URL")
+def predict_from_url(payload: URLPredictionRequest):
+    """Extract features from a URL and return the model prediction.
+
+    Body: {"url": "https://..."}
+    """
+    if app.state.model is None:
+        raise HTTPException(status_code=503, detail="Model not available on server")
+
+    # defer import so the feature module is optional and errors are surfaced as HTTP 500
+    try:
+        from mlops_equipo_63.feature_extraction_from_url import extract_and_predict
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Feature extraction module not available: {e}")
+
+    # Try to load canonical feature names if present so we align features to the model
+    try:
+        fn_path = Path("models").joinpath("feature_names.json")
+        feature_names = None
+        if fn_path.exists():
+            feature_names = json.loads(fn_path.read_text(encoding="utf-8"))
+    except Exception:
+        feature_names = None
+
+    res = extract_and_predict(payload.url, app.state.model, feature_names=feature_names, fill_random=False)
+    if res is None:
+        raise HTTPException(status_code=500, detail="Feature extraction or prediction failed")
+
+    out: Dict[str, Any] = {"prediction": _to_python(res.get("prediction"))}
+    if "probability" in res:
+        out["probability"] = _to_python(res.get("probability"))
+    if "probabilities" in res:
+        out["probabilities"] = _to_python(res.get("probabilities"))
+
+    return out
