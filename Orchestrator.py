@@ -8,11 +8,17 @@ from mlops_equipo_63 import (
     print_non_numeric, print_missing_info, print_outlier_summary,
     print_baseline, print_best_summary, print_final_metrics,
 )
+import random
+import numpy as np
 
 def main():
     # 0) Config
     cfg = Config()
     print(cfg)
+    # Ensure deterministic behavior across libraries where possible
+    # Use literal seed 42 to make runs reproducible
+    random.seed(42)
+    np.random.seed(42)
 
     # 1) Cargar datos
     df_raw = load_data(cfg.data_path)
@@ -36,7 +42,7 @@ def main():
 
     # 5) Split + baseline
     X_train, X_test, y_train, y_test, threshold, df_ready = prepare_train_test(
-        df_clip, target_col=cfg.target_col, test_size=cfg.test_size, random_state=cfg.random_state
+        df_clip, target_col=cfg.target_col, test_size=cfg.test_size, random_state=42
     )
     base_metrics, _ = baseline_classification(X_train, y_train, X_test, y_test)
     print_baseline(base_metrics)
@@ -55,7 +61,7 @@ def main():
         metric_name="roc_auc",
         extra_metrics=("accuracy",),
         enable_models=("RandomForest", "MLP", "XGBoost", "LightGBM"),
-        random_state=cfg.random_state,
+        random_state=42,
         mlflow_callback=mlflow_cb,
         n_jobs_cv=-1,
     )

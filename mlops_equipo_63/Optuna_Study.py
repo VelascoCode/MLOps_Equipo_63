@@ -67,7 +67,7 @@ def run_optuna_study(
             clf = RandomForestClassifier(
                 n_estimators=trial.suggest_int("rf_n_estimators", 50, 400),
                 max_depth=trial.suggest_int("rf_max_depth", 5, 30),
-                random_state=random_state,
+                random_state=42,
                 n_jobs=-1,
             )
             steps = [("classifier", clf)]  # RF no necesita scaler
@@ -78,7 +78,7 @@ def run_optuna_study(
                 alpha=trial.suggest_float("mlp_alpha", 1e-5, 1e-1, log=True),
                 max_iter=300,
                 early_stopping=True,
-                random_state=random_state,
+                random_state=42,
             )
             steps = [("scaler", StandardScaler()), ("classifier", clf)]
         elif name == "XGBoost":
@@ -91,7 +91,7 @@ def run_optuna_study(
                 objective="binary:logistic",
                 eval_metric="logloss",
                 tree_method="hist",
-                random_state=random_state,
+                random_state=42,
                 n_jobs=-1,
             )
             steps = [("classifier", clf)]  # XGB no necesita scaler
@@ -104,13 +104,13 @@ def run_optuna_study(
                 colsample_bytree=trial.suggest_float("lgbm_colsample", 0.6, 1.0),
                 objective="binary",
                 verbose=-1,
-                random_state=random_state,
+                random_state=42,
                 n_jobs=-1,
             )
             steps = [("classifier", clf)]
         else:
             # fallback para que nunca falle
-            clf = DummyClassifier(strategy="stratified", random_state=random_state)
+            clf = DummyClassifier(strategy="stratified", random_state=42)
             steps = [("classifier", clf)]
 
         return Pipeline(steps=steps)
@@ -130,7 +130,13 @@ def run_optuna_study(
             trial.set_user_attr(m, float(np.mean(scores[f"test_{m}"])))
         return mean_target
 
-    study = optuna.create_study(direction="maximize", study_name=study_name)
+    # create a seeded sampler (literal 42) so Optuna runs are reproducible
+    try:
+        sampler = optuna.samplers.TPESampler(seed=42)
+        study = optuna.create_study(direction="maximize", study_name=study_name, sampler=sampler)
+    except Exception:
+        # fallback if sampler creation fails for any reason
+        study = optuna.create_study(direction="maximize", study_name=study_name)
     callbacks = []
     if mlflow_callback is not None:
         callbacks.append(mlflow_callback)

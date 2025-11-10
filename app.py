@@ -14,6 +14,9 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, RootModel, Field, create_model
 from pydantic import model_validator
+from mlops_equipo_63.Configuration import Config
+import random
+import numpy as np
 
 
 MODEL_PATH = "models/final_model.pkl"
@@ -148,6 +151,13 @@ async def lifespan(app: FastAPI):
     app.state.model = None
     app.state.model_name = None
     try:
+        # set explicit seeds (literal 42) so server behavior is reproducible
+        try:
+            cfg = Config()
+            random.seed(42)
+            np.random.seed(42)
+        except Exception:
+            pass
         app.state.model = load_model(MODEL_PATH)
         app.state.model_name = getattr(app.state.model, "__class__", type(app.state.model)).__name__
     except FileNotFoundError:

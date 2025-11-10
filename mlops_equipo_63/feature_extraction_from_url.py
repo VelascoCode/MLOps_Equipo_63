@@ -16,6 +16,7 @@ from bs4 import BeautifulSoup
 import re
 from urllib.parse import urlparse
 import numpy as np
+import random
 import logging
 
 try:
@@ -32,6 +33,16 @@ except Exception:
     TextBlob = None
 
 _logger = logging.getLogger(__name__)
+
+# explicit literal seeds for deterministic behaviour in this module
+try:
+    random.seed(42)
+except Exception:
+    pass
+try:
+    np.random.seed(42)
+except Exception:
+    pass
 
 
 def _safe_nltk_setup():
