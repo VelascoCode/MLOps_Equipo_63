@@ -13,12 +13,12 @@ stages:
       size: 658
     - path: mlops_equipo_63/Optuna_Study.py
       hash: md5
-      md5: c2a3014b3728ae4ef875e1ca59168163
-      size: 6276
+      md5: 537176ce917bee4f4e464fa8e42e72ca
+      size: 6554
     - path: mlops_equipo_63/Retrain_and_Evaluate.py
       hash: md5
-      md5: e1ccda8a1c20dac8acbb37972e019adc
-      size: 9166
+      md5: 3809076d0428ea81c8111ca255bce8e1
+      size: 10782
     - path: mlops_equipo_63/Split_and_Dummy.py
       hash: md5
       md5: f76d9013d74db5e2697abd8c5f060acd
@@ -50,20 +50,20 @@ stages:
       size: 20128970
     - path: models/final_model.pkl
       hash: md5
-      md5: 39226ee7ab733cccc424600e9c6316d8
-      size: 18075579
+      md5: 9250ea62b8691faec82eaf45ed31f142
+      size: 339182517
     - path: reports/confusion_matrix.png
       hash: md5
-      md5: a9b74a825ab32c89ff464da437e216c7
-      size: 22393
+      md5: 22efede2c5057fda95314b48ab239c79
+      size: 22512
     - path: reports/feature_importance.png
       hash: md5
-      md5: 5c9c9861d4f0e5dbd1f9de6da8b8d712
-      size: 45706
+      md5: 9270160cc459cad23f973bd05e24d5e4
+      size: 49154
     - path: reports/metrics.json
       hash: md5
-      md5: 8f4cd9f6555623d2413cacca86728f47
-      size: 433
+      md5: 4f46a5149d91b9d9e404db2d82b2bd52
+      size: 304
   setup:
     cmd: "python -m venv .venv\n.venv\\Scripts\\python -m pip install --upgrade pip\n\
       .venv\\Scripts\\python -m pip install -r requirements.txt\n"
