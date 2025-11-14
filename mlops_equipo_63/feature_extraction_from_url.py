@@ -34,15 +34,8 @@ except Exception:
 
 _logger = logging.getLogger(__name__)
 
-# explicit literal seeds for deterministic behaviour in this module
-try:
-    random.seed(42)
-except Exception:
-    pass
-try:
-    np.random.seed(42)
-except Exception:
-    pass
+# Note: Seeds should be set by the entrypoint (train.py or app.py), not here.
+# Avoid setting seeds at module import-time to allow tests to control randomness.
 
 
 def _safe_nltk_setup():

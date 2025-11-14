@@ -1,6 +1,8 @@
 # mlops_equipo_63/pipeline.py
 from pathlib import Path
 from typing import Optional, Dict, Any, Tuple, List
+import random
+import numpy as np
 
 import pandas as pd
 
@@ -15,12 +17,11 @@ from .EDA_Plotting import EDAPlotter  # opcional si usas .eda()
 class MLOpsPipeline:
     def __init__(self, cfg: Optional[Config] = None):
         self.cfg = cfg or Config()
-        # set explicit seeds for reproducibility (literal 42)
+        # Semillas deben ser establecidas por el entrypoint (train.py), no aquí.
+        # Si no se han establecido, usar cfg.random_state como fallback.
         try:
-            import random
-            import numpy as np
-            random.seed(42)
-            np.random.seed(42)
+            random.seed(self.cfg.random_state)
+            np.random.seed(self.cfg.random_state)
         except Exception:
             pass
         # artefactos
@@ -64,10 +65,11 @@ class MLOpsPipeline:
             self.df_clipped,
             target_col=self.cfg.target_col,
             test_size=self.cfg.test_size,
-            random_state=42,
+            random_state=self.cfg.random_state,
         )
         base_metrics, _ = baseline_classification(
-            self.X_train, self.y_train, self.X_test, self.y_test
+            self.X_train, self.y_train, self.X_test, self.y_test,
+            random_state=self.cfg.random_state
         )
         print("Baseline:", base_metrics)
         return self
@@ -88,10 +90,11 @@ class MLOpsPipeline:
             cv=self.cfg.cv_folds,
             metric_name="roc_auc",
             extra_metrics=("accuracy",),
-            enable_models=("RandomForest", "MLP", "XGBoost", "LightGBM"),
-            random_state=42,
+            enable_models=self.cfg.enable_models or ("RandomForest", "MLP", "XGBoost", "LightGBM"),
+            random_state=self.cfg.optuna_random_state or self.cfg.random_state,
+            search_space=self.cfg.search_space,
             mlflow_callback=self.mlflow_cb,
-            n_jobs_cv=-1,
+            n_jobs_cv=self.cfg.n_jobs_cv,
         )
         print("Best:", self.best_summary)
         return self

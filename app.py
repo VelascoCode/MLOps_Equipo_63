@@ -5,6 +5,7 @@ import json
 import pickle
 import joblib
 import numpy as np
+import random
 
 import pandas as pd
 from fastapi import Request
@@ -15,11 +16,17 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel, RootModel, Field, create_model
 from pydantic import model_validator
 from mlops_equipo_63.Configuration import Config
-import random
-import numpy as np
 
 
 MODEL_PATH = "models/final_model.pkl"
+
+# Load config at startup
+try:
+    _cfg = Config.from_params("params.yaml")
+    MODEL_PATH = _cfg.api_model_path
+except Exception:
+    # Fallback to default if config loading fails
+    pass
 
 
 
@@ -151,14 +158,12 @@ async def lifespan(app: FastAPI):
     app.state.model = None
     app.state.model_name = None
     try:
-        # set explicit seeds (literal 42) so server behavior is reproducible
-        try:
-            cfg = Config()
-            random.seed(42)
-            np.random.seed(42)
-        except Exception:
-            pass
-        app.state.model = load_model(MODEL_PATH)
+        # Load config from params.yaml
+        cfg = Config.from_params("params.yaml")
+        # Set seeds for reproducibility (if needed in API context)
+        random.seed(cfg.random_state)
+        np.random.seed(cfg.random_state)
+        app.state.model = load_model(cfg.api_model_path)
         app.state.model_name = getattr(app.state.model, "__class__", type(app.state.model)).__name__
     except FileNotFoundError:
         app.state.model = None
