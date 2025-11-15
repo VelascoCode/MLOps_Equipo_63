@@ -26,12 +26,12 @@ def suggest_param(trial: optuna.Trial, name: str, spec: Dict[str, Any]) -> Any:
     t = spec.get("type")
     
     if t == "int":
-        return trial.suggest_int(name, spec["low"], spec["high"])
+        return trial.suggest_int(name, int(spec["low"]), int(spec["high"]))
     elif t == "float":
         if spec.get("log"):
-            return trial.suggest_float(name, spec["low"], spec["high"], log=True)
+            return trial.suggest_float(name, float(spec["low"]), float(spec["high"]), log=True)
         else:
-            return trial.suggest_float(name, spec["low"], spec["high"])
+            return trial.suggest_float(name, float(spec["low"]), float(spec["high"]))
     elif t == "categorical":
         return trial.suggest_categorical(name, spec["choices"])
     else:
@@ -219,7 +219,7 @@ def run_optuna_study(
         extras = " ".join(
             f"{m}: {trial.user_attrs.get(m, float('nan')):.4f}" for m in extra_metrics
         )
-        print(f"Trial {trial.number} → {metric_name.upper()}: {trial.value:.4f} | {extras}")
+        print(f"Trial {trial.number} -> {metric_name.upper()}: {trial.value:.4f} | {extras}")
 
     callbacks.append(print_metrics_callback)
 
@@ -348,7 +348,7 @@ def run_optuna_study(
         extras = " ".join(
             f"{m}: {trial.user_attrs.get(m, float('nan')):.4f}" for m in extra_metrics
         )
-        print(f"Trial {trial.number} → {metric_name.upper()}: {trial.value:.4f} | {extras}")
+        print(f"Trial {trial.number} -> {metric_name.upper()}: {trial.value:.4f} | {extras}")
 
     callbacks.append(print_metrics_callback)
 

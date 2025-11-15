@@ -263,5 +263,5 @@ def retrain_and_evaluate_best(
         except Exception:
             pass
 
-    print("\n✅ Modelo final guardado en 'models/final_model.pkl' y métricas registradas en MLflow.")
+    print("\nModelo final guardado en 'models/final_model.pkl' y métricas registradas en MLflow.")
     return final_pipeline, metrics, importance_df

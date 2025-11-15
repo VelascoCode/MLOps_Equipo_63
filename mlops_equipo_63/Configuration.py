@@ -21,37 +21,37 @@ def _load_params(path: str = "params.yaml") -> Dict[str, Any]:
 @dataclass
 class Config:
     """Configuration class that reads from params.yaml and env vars (with overrides)."""
-    
+
     # Data
-    data_path: str
-    processed_dir: str
-    
+    data_path: str = "data/raw/online_news_modified.csv"
+    processed_dir: str = "data/processed"
+
     # Train
-    test_size: float
-    random_state: int
-    n_trials: int
-    cv_folds: int
-    n_jobs_cv: int
-    
+    test_size: float = 0.2
+    random_state: int = 42
+    n_trials: int = 20
+    cv_folds: int = 5
+    n_jobs_cv: int = -1
+
     # Model
-    target_col: str
-    pos_label_threshold: int
-    study_name: str
-    
+    target_col: str = "shares"
+    pos_label_threshold: int = 1400
+    study_name: str = "optuna_study"
+
     # Track
-    mlflow_experiment: str
-    mlflow_tracking_uri: str
-    
+    mlflow_experiment: str = "mlops_experiment"
+    mlflow_tracking_uri: str = "mlruns"
+
     # Optuna (optional)
     optuna_random_state: Optional[int] = None
-    optuna_n_jobs: Optional[int] = None
+    optuna_n_jobs: Optional[int] = 1
     enable_models: Optional[list] = None
     search_space: Optional[Dict[str, Any]] = None
-    
+
     # API
     api_model_path: str = "models/final_model.pkl"
     api_feature_names_path: str = "models/feature_names.json"
-    
+
     # Feature extraction
     feature_extraction_fill_random: bool = False
 
