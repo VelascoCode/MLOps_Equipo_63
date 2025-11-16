@@ -1,0 +1,32 @@
+FROM python:3.12.12-slim 
+
+# Create app directory
+WORKDIR /app
+
+# Install system packages (required for numpy, scipy, scikit-learn, pandas)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements first (for Docker caching)
+COPY requirements.txt .
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy your FastAPI app
+COPY app.py .
+
+# Copy your ML model
+COPY models/ ./models/
+
+# COPY your full package so this import works:
+# from mlops_equipo_63.Configuration import Config
+COPY mlops_equipo_63/ ./mlops_equipo_63/
+
+# Expose FastAPI port
+EXPOSE 8000
+
+# Run app with uvicorn inside Docker
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
