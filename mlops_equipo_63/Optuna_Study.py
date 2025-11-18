@@ -203,12 +203,27 @@ def run_optuna_study(
         return mean_target
 
     # create a seeded sampler (random_state) so Optuna runs are reproducible
+    # URL de storage para que Optuna guarde el estudio en SQLite
+    storage_url = "sqlite:///mlruns/optuna.db"
+
+    # create a seeded sampler (random_state) so Optuna runs are reproducible
     try:
         sampler = optuna.samplers.TPESampler(seed=random_state)
-        study = optuna.create_study(direction="maximize", study_name=study_name, sampler=sampler)
+        study = optuna.create_study(
+            direction="maximize",
+            study_name=study_name,
+            sampler=sampler,
+            storage=storage_url,
+            load_if_exists=True,
+        )
     except Exception:
         # fallback if sampler creation fails for any reason
-        study = optuna.create_study(direction="maximize", study_name=study_name)
+        study = optuna.create_study(
+            direction="maximize",
+            study_name=study_name,
+            storage=storage_url,
+            load_if_exists=True,
+        )
     
     callbacks = []
     if mlflow_callback is not None:
