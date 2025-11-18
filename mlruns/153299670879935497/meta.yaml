@@ -1,6 +1,0 @@
-artifact_location: file:///C:/Users/betoa/Documents/TEC/MLOPS/Gits/Fase2/MLOps_Equipo_63/mlruns/153299670879935497
-creation_time: 1762119466676
-experiment_id: '153299670879935497'
-last_update_time: 1762119466676
-lifecycle_stage: active
-name: fase2_optuna_study

@@ -1,0 +1,56 @@
+name: Build and Publish Docker image
+
+on:
+  push:
+    branches: [ main ]
+    tags: [ 'v*.*.*' ]
+  workflow_dispatch:
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Determine tags
+        id: meta
+        run: |
+          echo "GIT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            echo "IS_TAG=true" >> $GITHUB_ENV
+            echo "RELEASE_TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+          else
+            echo "IS_TAG=false" >> $GITHUB_ENV
+          fi
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/ml-service:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/ml-service:${{ env.GIT_SHA }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/ml-service:${{ env.RELEASE_TAG }}
+          platforms: linux/amd64
+
+      - name: Image info
+        run: |
+          echo "Image pushed: ${{ secrets.DOCKERHUB_USERNAME }}/ml-service"

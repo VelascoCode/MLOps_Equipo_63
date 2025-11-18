@@ -15,6 +15,7 @@ from mlflow.models.signature import infer_signature  # opcional (ya no la usamos
 from pathlib import Path
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
+from sklearn.impute import SimpleImputer
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import (
@@ -34,6 +35,8 @@ try:
     import lightgbm as lgb
 except Exception:
     lgb = None
+
+from mlops_equipo_63.Outlier_Clipper import OutlierClipper, DataFrameTransformer
 
 
 def retrain_and_evaluate_best(
@@ -64,7 +67,14 @@ def retrain_and_evaluate_best(
         return (50,)
 
     model_params: Dict[str, Any] = {}
+    # Preprocessing steps: imputer first (mirrors prepare_numeric_df imputation)
     steps = []
+    # wrap SimpleImputer so it returns a DataFrame with column names preserved
+    steps.append(("imputer", DataFrameTransformer(SimpleImputer(strategy="median"))))
+    # outlier clipping step (custom transformer that returns a DataFrame)
+    steps.append(("outlierclipper", OutlierClipper()))
+    # scaling (wrap so we keep DataFrame/column names)
+    steps.append(("scaler", DataFrameTransformer(StandardScaler())))  # default scaler
 
     if clf_name == "RandomForest":
         rename_map = {"rf_n_estimators": "n_estimators", "rf_max_depth": "max_depth"}
@@ -77,7 +87,7 @@ def retrain_and_evaluate_best(
         allow = {"mlp_alpha": "alpha"}
         model_params = {allow[k]: v for k, v in best_params.items() if k in allow}
         final_clf = MLPClassifier(max_iter=300, early_stopping=True, random_state=random_state, **model_params)
-        steps.append(("scaler", StandardScaler()))
+        # scaling required for neural nets — scaler is already in the default steps
 
     elif clf_name == "XGBoost":
         if xgb is None:
@@ -145,6 +155,23 @@ def retrain_and_evaluate_best(
 
         # Entrenar y evaluar
         final_pipeline.fit(X_train, y_train)
+
+        # Intentar obtener los nombres de las características procesadas (útiles para serving)
+        feature_names = None
+        try:
+            pre_clf = None
+            if "scaler" in final_pipeline.named_steps:
+                pre_clf = final_pipeline.named_steps["scaler"]
+            elif "outlierclipper" in final_pipeline.named_steps:
+                pre_clf = final_pipeline.named_steps["outlierclipper"]
+            elif "imputer" in final_pipeline.named_steps:
+                pre_clf = final_pipeline.named_steps["imputer"]
+
+            if pre_clf is not None and hasattr(pre_clf, "get_feature_names_out"):
+                feature_names = list(pre_clf.get_feature_names_out())
+        except Exception:
+            feature_names = None
+
         y_pred = final_pipeline.predict(X_test)
 
         if hasattr(final_pipeline, "predict_proba"):
@@ -217,6 +244,15 @@ def retrain_and_evaluate_best(
         model_path = models_dir / "final_model.pkl"
         joblib.dump(final_pipeline, model_path)
 
+        # Guardar lista de nombres de características procesadas (si se obtuvo)
+        try:
+            if feature_names:
+                features_path = models_dir / "feature_names.json"
+                with open(features_path, "w", encoding="utf-8") as f:
+                    json.dump(feature_names, f, indent=2, ensure_ascii=False)
+        except Exception:
+            pass
+
         # Artefacto con best_params (pequeño)
         try:
             with tempfile.TemporaryDirectory() as tmpdir:
@@ -227,5 +263,5 @@ def retrain_and_evaluate_best(
         except Exception:
             pass
 
-    print("\n✅ Modelo final guardado en 'models/final_model.pkl' y métricas registradas en MLflow.")
+    print("\nModelo final guardado en 'models/final_model.pkl' y métricas registradas en MLflow.")
     return final_pipeline, metrics, importance_df

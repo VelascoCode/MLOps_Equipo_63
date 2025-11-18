@@ -165,120 +165,148 @@ Para gestionar el versionamiento del código, utilizamos [Git](https://git-scm.c
 
 Una vez que creada la estructura del proyecto con CoockieCutters, inicializamos Git en la raíz del proyecto (mlops_equipo_63), añadimos todos los archivos, creamos el commit, y empujamos todos los cambios a la rama principal del repositorio remoto:
 
-```bash
-git --version
-
-cd mlops_equipo_63
-
-git init
+```powershell
+git checkout -b feature/mi-feature
 git add .
-git commit -m "CCDS defaults"
-git remote add origin https://github.com/VelascoCode/MLOps_Equipo_63
-git branch -M main
-git push -u origin main
+git commit -m "Descripción breve"
+git push origin feature/mi-feature
 ```
 
------
+## 5) AWS (uso principal: DVC remoto)
 
-### Amazon Web Services (AWS): IAM User/Role, Access Key, S3 Bucket
+El repositorio está preparado para usar S3 como remoto de DVC. No incluye credenciales.
 
-Para poder almacenar las diversas versiones de los datos con los que vamos a estar trabajando, creamos un [Amazon S3 bucket](https://docs.aws.amazon.com/AmazonS3/latest/userguide/create-bucket-overview.html) con la cuenta de AWS de un miembro del equipo: *s3://mlops-equipo-63*. En esta cuenta también creamos un [rol](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_examples_s3_rw-bucket.html) con permisos de escritura y lectura hacía este S3 bucket. Este rol se asignó a diversos usuarios que también se crearon para que los demás miembros del equipo pudieran utilizar el S3 bucket a través de la linea de comando utilizando una [access key](https://docs.aws.amazon.com/cli/v1/userguide/cli-authentication-user.html). Por simplicidad, se utilizó la matrícula del TEC para definir el nombre de los usuarios. 
+Configuración rápida:
 
-Para conectarnos a la cuenta de AWS con los usuarios previamente creados, instalamos [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) en el ambiente virtual de Conda y proporcionamos la access key correspondiente:
-
-```bash
-pip install awscli
-
-aws --version
-
+```powershell
 aws configure
-
-AWS Access Key ID [****************5XMO]: 
-AWS Secret Access Key [****************JlOz]:
-Default region name [us-east-1]: us-east-1
-Default output format [json]: json
-```
-
-Para validar la conexión con la cuenta de AWS utilizamos los siguentes comandos:
-
-```bash
-aws sts get-caller-identity
-aws s3 ls
-```
-
------
-
-### Data Version Control (DVC)
-
-Para gestionar el versionamiento de los datos, utilizamos [DVC](https://dvc.org/doc/install) y la instancia de Amazon S3 bucket previamente creada. Instalamos DVC en el ambiente virtual de Conda y lo inicializamos en la raíz del proyecto:
-
-```bash
-pip install dvc
-
-dvc --version
-
-cd mlops_equipo_63
-
-dvc init
-git commit -m "Initialize DVC"
-```
-
-Establecemos la conexión entre DVC y el Amazon S3 bucket:
-
-```bash
-pip install dvc-s3
-
-dvc remote add -d storage s3://mlops-equipo-63
-```
-
-Para validar el funcionamiento de DVC, creamos un archivo dummy en *data/raw/dummy.csv* y lo añadimos con DVC, creamos el commit correspondiente con Git y lo empujamos al S3 bucket con DVC:
-
-```bash
-mkdir -p data/raw && echo -e "id,name,age,city\n1,Alice,25,New York" > data/raw/dummy.csv # (v1)
-
-dvc add data/raw/test.csv # un nuevo archivo se creará: data/raw/dummy.csv.dvc
-git commit -m 'added dummy.csv.dvc file'
+dvc remote add -d storage s3://<tu-bucket>
 dvc push
 ```
 
-Modificamos el archivo *dummy.csv*, revisamos el status con DVC y repetimos los pasos (add, commit, push):
+## 6) DVC — Versionado de datos
 
-```bash
-echo "3,Charlie,35,Chicago" >> data/raw/dummy.csv # (v2)
+DVC se utiliza para versionar conjuntos de datos y conectar con remotos (S3). El pipeline reproducible está descrito en `dvc.yaml`.
 
-dvc status
+Ejemplos:
 
-dvc add data/raw/test.csv
-git commit -m 'modified dummy.csv.dvc file'
+```powershell
+dvc init                     # si aún no está inicializado
+dvc add data/raw/online_news_modified.csv
+git add data/raw/online_news_modified.csv.dvc .dvcignore
+git commit -m "Añadido raw data dvc"
 dvc push
 ```
 
-Para regresar a la version 1 (v1), cambiamos de versión con Git y hacemos el pull de los datos con DVC:
+Para recuperar datos versionados:
 
-```bash
-git log --oneline
-git checkout e5af546 # commit hash del commit 'added dummy.csv.dvc file'
-
+```powershell
 dvc pull
 ```
 
-Para regresar a la versión del último commit ejecutamos:
+## 7) MLflow — Experimentos y modelos
 
-```bash
-git checkout main 
-dvc pull
+MLflow se usa para rastrear experimentos y almacenar modelos (carpeta `mlruns/`).
+
+Arrancar un servidor de tracking local (opcional):
+
+```powershell
+mlflow server --backend-store-uri ./mlruns --default-artifact-root ./mlruns --host 127.0.0.1 --port 5000
 ```
 
------
+Los artefactos y modelos guardados por MLflow pueden exportarse o copiarse a la carpeta `models/` para servirlos desde la API o empaquetarlos en Docker.
 
-### MLflow
+## 8) Optuna — Búsqueda de hiperparámetros
 
-Para el versionamiento de los modelos de Machine Learning utilizamos MLflow. Instalamos MLflow en el ambiente virtual de Conda y lo ejecutamos dentro del folder */notebooks* para almacenar los experimentos en esta ruta:
+La optimización de hiperparámetros se implementa con Optuna (ver `mlops_equipo_63/Optuna_Study.py`). Los resultados se registran en MLflow para comparar runs.
 
-```bash
-pip install mlflow
-mlflow server --host 127.0.0.1 --port 8080
+Ejecutar estudio Optuna (ejemplo):
+
+```powershell
+python mlops_equipo_63/Optuna_Study.py
 ```
+
+## 9) Semilla aleatoria (reproducibilidad)
+
+Para asegurar reproducibilidad el proyecto incluye utilidades para fijar la semilla global (ver `mlops_equipo_63/seed.py`). Usar la semilla consistente en entrenamiento y evaluación ayuda a obtener resultados comparables.
+
+## 10) Testing (pytest)
+
+La suite de pruebas se encuentra en `tests/`. Ejecutar las pruebas con:
+
+```powershell
+pytest -q
+```
+
+Incluye tests para componentes de carga/preparación, EDA, utilidades, MLflow y la API.
+
+## 11) FastAPI — API y endpoints
+
+La API se implementa en `app.py`. Endpoints principales:
+
+- `GET /health` — Estado del servicio y carga del modelo
+- `POST /predict` — Predicción para una sola instancia
+- `POST /predict_batch` — Predicciones en lote (JSON o CSV)
+- `POST /predict_url` — Extrae características desde una URL y devuelve predicción
+
+Levantar la API en desarrollo:
+
+```powershell
+uvicorn app:app --host 0.0.0.0 --port 8000 --reload
+```
+
+Comprobación rápida (PowerShell):
+
+```powershell
+Invoke-RestMethod -Uri http://localhost:8000/health
+```
+
+Notas de implementación:
+
+- `mlops_equipo_63/feature_extraction_from_url.py` contiene la lógica para extraer features desde páginas web.
+- La API carga el modelo desde `models/` al iniciar. En desarrollo, monte `models/` desde el host para poder reemplazar el modelo sin rebuild.
+
+## 12) Docker y contenerización
+
+El `Dockerfile` es multi-stage y optimizado para reducir tamaño final.
+
+Opciones de uso:
+
+- Desarrollo (montar `models/` desde host):
+
+```powershell
+docker build -t ml-service:latest .
+docker run --rm -p 8000:8000 -v ${PWD}\models:/app/models:ro ml-service:latest
+```
+
+- Producción (incluir modelo en la imagen):
+
+1. Copiar los artefactos del modelo (`models/final_model.pkl`, `models/feature_names.json`) en `models/`.
+2. `docker build -t ml-service:latest .`
+3. `docker run --rm -p 8000:8000 ml-service:latest`
+
+Consideraciones:
+
+- Montar `models/` facilita iteración en desarrollo.
+- Incluir el modelo en la imagen es aconsejable para despliegues inmutables.
+
+## Cómo reproducir lo esencial (rápido)
+
+1. Crear entorno e instalar dependencias.
+2. Recuperar datos si están en DVC: `dvc pull`.
+3. Entrenar: `python train.py` o ejecutar el pipeline DVC (`dvc repro`).
+4. Revisar resultados en MLflow (`mlruns/`).
+5. Levantar API: `uvicorn app:app --reload`.
+
+## Archivos y rutas clave
+
+- `app.py` — API
+- `train.py` — Entrenamiento
+- `dvc.yaml`, `params.yaml` — Pipeline y parámetros
+- `mlops_equipo_63/` — Código fuente principal
+- `models/` — Modelos (puede no estar incluido en git)
+- `mlruns/` — Experimentos MLflow locales
+- `tests/` — Pruebas
 
 -----
 ### Pipeline Automatizado con DVC

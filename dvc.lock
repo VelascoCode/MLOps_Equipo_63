@@ -5,20 +5,20 @@ stages:
     deps:
     - path: data/raw/online_news_modified.csv
       hash: md5
-      md5: 378efec5965400e8af2d93f1e79bf811
-      size: 22660806
+      md5: eac0517d5230b5152e0f50d74204f070
+      size: 22660807
     - path: mlops_equipo_63/Configuration.py
       hash: md5
-      md5: 53cc3e21edc7d01c6bc83dd798430e9d
-      size: 658
+      md5: da314e9ef875ea339be7ef065a79e39a
+      size: 4983
     - path: mlops_equipo_63/Optuna_Study.py
       hash: md5
-      md5: f34b458d3767aa9ab488055d193aae34
-      size: 6247
+      md5: 00c10a1ff221af2d498e34e5aab6b6a2
+      size: 16564
     - path: mlops_equipo_63/Retrain_and_Evaluate.py
       hash: md5
-      md5: ca3cb3cf0bd86293186ec359343e1874
-      size: 8933
+      md5: b38b986e352798aac6222df89759c7aa
+      size: 10778
     - path: mlops_equipo_63/Split_and_Dummy.py
       hash: md5
       md5: f76d9013d74db5e2697abd8c5f060acd
@@ -37,12 +37,12 @@ stages:
       size: 820
     - path: params.yaml
       hash: md5
-      md5: c63638367b368822452bb313a67ac000
-      size: 281
+      md5: d754000b60e27e08c797f2300cd64058
+      size: 1580
     - path: train.py
       hash: md5
-      md5: 84cc789759ddfc6208407159cc3cf300
-      size: 1975
+      md5: edf18faa746dcea4d0cceb0cb73fa627
+      size: 1869
     outs:
     - path: data/processed/dataset_processed.csv
       hash: md5
@@ -50,17 +50,31 @@ stages:
       size: 20128970
     - path: models/final_model.pkl
       hash: md5
-      md5: 220b51dcdb537e328d5baaba6a9e035d
-      size: 342810146
+      md5: fbb4283f6de72de633877b3e29ccea70
+      size: 19598928
     - path: reports/confusion_matrix.png
       hash: md5
-      md5: 3219df2fceddab9210a2b1cbfc7a6ad6
-      size: 22549
+      md5: 4313cd514e07563468e6b307f4417d86
+      size: 22338
     - path: reports/feature_importance.png
       hash: md5
-      md5: e25397ac8f87175ea018cd095c536fe9
-      size: 49558
+      md5: a375e6e20c29f721edfbcc21796cfd0a
+      size: 46601
     - path: reports/metrics.json
       hash: md5
-      md5: d68644e3ed10497c1b2056b73668408c
-      size: 305
+      md5: 4f270ef21500f4ea654054556100f424
+      size: 441
+  setup:
+    cmd: "python -m venv .venv\n.venv\\Scripts\\python -m pip install --upgrade pip\n\
+      .venv\\Scripts\\python -m pip install -r requirements.txt\n"
+    deps:
+    - path: requirements.txt
+      hash: md5
+      md5: a245be372a89f1fbb427cce80c429be6
+      size: 9554
+    outs:
+    - path: .venv
+      hash: md5
+      md5: 7a36622cd2a091b1ec827b5c6d5a5a04.dir
+      size: 1122523955
+      nfiles: 47203

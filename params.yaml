@@ -3,13 +3,53 @@ data:
   processed_dir: data/processed
 
 train:
-  target: shares
   test_size: 0.2
   random_state: 42
   n_trials: 20
   cv_folds: 5
+  n_jobs_cv: -1
+
+model:
+  target_col: shares
+  pos_label_threshold: 1400
   study_name: fase2_optuna_study_v1
 
 track:
   experiment: Equipo63_Fase2
   mlruns_dir: mlruns
+
+optuna:
+  random_state: 42
+  n_jobs: 1
+  enable_models:
+    - RandomForest
+    - MLP
+    - XGBoost
+    - LightGBM
+  search_space:
+    RandomForest:
+      rf_n_estimators: {type: int, low: 50, high: 400}
+      rf_max_depth: {type: int, low: 5, high: 30}
+    MLP:
+      mlp_hidden_layers: {type: categorical, choices: ["50", "100", "50x50"]}
+      mlp_alpha: {type: float, low: 1e-5, high: 1e-1, log: true}
+      mlp_max_iter: {type: int, low: 200, high: 500}
+    XGBoost:
+      xgb_n_estimators: {type: int, low: 100, high: 800}
+      xgb_learning_rate: {type: float, low: 0.01, high: 0.3}
+      xgb_max_depth: {type: int, low: 3, high: 10}
+      xgb_subsample: {type: float, low: 0.6, high: 1.0}
+      xgb_colsample_bytree: {type: float, low: 0.6, high: 1.0}
+    LightGBM:
+      lgbm_n_estimators: {type: int, low: 100, high: 800}
+      lgbm_learning_rate: {type: float, low: 0.01, high: 0.3}
+      lgbm_num_leaves: {type: int, low: 20, high: 200}
+      lgbm_subsample: {type: float, low: 0.6, high: 1.0}
+      lgbm_colsample_bytree: {type: float, low: 0.6, high: 1.0}
+
+api:
+  model_path: models/final_model.pkl
+  feature_names_path: models/feature_names.json
+
+feature_extraction:
+  fill_random: false

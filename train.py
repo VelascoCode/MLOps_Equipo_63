@@ -1,31 +1,28 @@
 # train.py (raíz del repo)
 import sys
+import random
+import numpy as np
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+
 from mlops_equipo_63.Configuration import Config
 from mlops_equipo_63.pipeline import MLOpsPipeline
 import json, yaml
-from pathlib import Path
 
 def main():
-    # Leer params.yaml
-    with open("params.yaml", "r", encoding="utf-8") as f:
-        P = yaml.safe_load(f)
-
-    cfg = Config(
-        data_path=P["data"]["raw_path"],
-        test_size=P["train"]["test_size"],
-        n_trials=P["train"]["n_trials"],
-        cv_folds=P["train"]["cv_folds"],
-        mlflow_experiment=P["track"]["experiment"],
-        mlflow_tracking_uri=P["track"]["mlruns_dir"]
-    )
-
+    # Cargar configuración desde params.yaml (con overrides de env vars)
+    cfg = Config.from_params("params.yaml")
+    
+    # Establecer semillas globales una única vez al inicio
+    random.seed(cfg.random_state)
+    np.random.seed(cfg.random_state)
+    
+    # Ejecutar pipeline con la configuración
     pipe = MLOpsPipeline(cfg).run_all(show_eda=False)
 
     # === Persistir artefactos para DVC ===
     # 1) Dataset procesado
-    processed_dir = Path(P["data"]["processed_dir"])
+    processed_dir = Path(cfg.processed_dir)
     processed_dir.mkdir(parents=True, exist_ok=True)
     if pipe.df_clipped is not None:
         (processed_dir / "dataset_processed.csv").write_text(
