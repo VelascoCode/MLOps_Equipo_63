@@ -68,6 +68,32 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
+  /predict_url:
+    post:
+      summary: Predict from article URL
+      description: 'Extract features from a URL and return the model prediction.
+
+        Body: {"url": "https://..."}'
+      operationId: predict_from_url_predict_from_url_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/URLPredictionRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SinglePredictionResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
     BatchPredictionRequest:
@@ -488,3 +514,14 @@ components:
       - msg
       - type
       title: ValidationError
+    URLPredictionRequest:
+      properties:
+        url:
+          type: string
+          title: Url
+      type: object
+      required:
+      - url
+      title: URLPredictionRequest
+      example:
+        url: "https://example.com/article/1"
